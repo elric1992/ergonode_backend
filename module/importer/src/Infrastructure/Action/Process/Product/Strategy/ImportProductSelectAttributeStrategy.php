@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -13,11 +13,11 @@ use Ergonode\Attribute\Domain\ValueObject\AttributeCode;
 use Ergonode\Core\Domain\ValueObject\TranslatableString;
 use Ergonode\Value\Domain\ValueObject\ValueInterface;
 use Ergonode\Attribute\Domain\ValueObject\OptionKey;
-use Webmozart\Assert\Assert;
 use Ergonode\Value\Domain\ValueObject\TranslatableStringValue;
 use Ergonode\Attribute\Domain\Entity\Attribute\SelectAttribute;
 use Ergonode\Attribute\Domain\Query\OptionQueryInterface;
 use Ergonode\Attribute\Domain\ValueObject\AttributeType;
+use Ergonode\Importer\Infrastructure\Exception\ImportMissingOptionException;
 
 class ImportProductSelectAttributeStrategy implements ImportProductAttributeStrategyInterface
 {
@@ -44,10 +44,9 @@ class ImportProductSelectAttributeStrategy implements ImportProductAttributeStra
             $key = new OptionKey($version);
             $optionId = $this->optionQuery->findIdByAttributeIdAndCode($id, $key);
 
-            Assert::notNull(
-                $optionId,
-                sprintf('Can\'t find id for %s option in %s attribute', $key->getValue(), $code->getValue())
-            );
+            if (null === $optionId) {
+                throw new ImportMissingOptionException($key, $code);
+            }
 
             $result[$language] = $optionId;
         }

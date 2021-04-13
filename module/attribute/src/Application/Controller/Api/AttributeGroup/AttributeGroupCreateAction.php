@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\PropertyAccess\Exception\InvalidPropertyPathException;
 use Symfony\Component\Routing\Annotation\Route;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Ergonode\Attribute\Domain\ValueObject\AttributeGroupCode;
 
 /**
@@ -42,7 +42,7 @@ class AttributeGroupCreateAction
     }
 
     /**
-     * @IsGranted("ATTRIBUTE_GROUP_CREATE")
+     * @IsGranted("ATTRIBUTE_POST_GROUP")
      *
      * @SWG\Tag(name="Attribute")
      * @SWG\Parameter(

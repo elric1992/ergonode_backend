@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,7 +12,7 @@ namespace Ergonode\Segment\Infrastructure\Persistence\Projector\Segment;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Ergonode\Segment\Domain\Event\SegmentCreatedEvent;
-use JMS\Serializer\SerializerInterface;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 
 class DbalSegmentCreatedEventProjector
 {
@@ -38,10 +38,15 @@ class DbalSegmentCreatedEventProjector
             [
                 'id' => $event->getAggregateId()->getValue(),
                 'code' => $event->getCode(),
-                'name' => $this->serializer->serialize($event->getName(), 'json'),
-                'description' => $this->serializer->serialize($event->getDescription(), 'json'),
+                'name' => $this->serializer->serialize($event->getName()),
+                'description' => $this->serializer->serialize($event->getDescription()),
                 'condition_set_id' => $event->getConditionSetId() ? $event->getConditionSetId()->getValue() : null,
             ]
+        );
+
+        $this->connection->executeQuery(
+            'INSERT INTO segment_product (segment_id, product_id) SELECT ?, id FROM product',
+            [$event->getAggregateId()->getValue()]
         );
     }
 }

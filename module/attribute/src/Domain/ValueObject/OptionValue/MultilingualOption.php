@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,30 +11,14 @@ namespace Ergonode\Attribute\Domain\ValueObject\OptionValue;
 
 use Ergonode\Attribute\Domain\ValueObject\OptionInterface;
 use Ergonode\Core\Domain\ValueObject\TranslatableString;
-use JMS\Serializer\Annotation as JMS;
 
 class MultilingualOption implements OptionInterface
 {
-    public const TYPE = 'translation';
-
-    /**
-     * @JMS\Type("Ergonode\Core\Domain\ValueObject\TranslatableString")
-     */
     private TranslatableString $value;
 
     public function __construct(TranslatableString $value)
     {
         $this->value = $value;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @JMS\VirtualProperty()
-     */
-    public function getType(): string
-    {
-        return self::TYPE;
     }
 
     public function getValue(): TranslatableString

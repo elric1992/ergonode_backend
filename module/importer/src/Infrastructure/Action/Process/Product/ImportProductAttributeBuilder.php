@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Ergonode\Importer\Infrastructure\Action\Process\Product;
 
+use Ergonode\Importer\Infrastructure\Exception\ImportException;
 use Webmozart\Assert\Assert;
 use Ergonode\Value\Domain\ValueObject\TranslatableStringValue;
 use Ergonode\Core\Domain\ValueObject\TranslatableString;
@@ -24,13 +25,14 @@ class ImportProductAttributeBuilder
     /**
      * @var ImportProductAttributeStrategyInterface[]
      */
-    private array $strategies;
+    private iterable $strategies;
 
     public function __construct(
         AttributeQueryInterface $attributeQuery,
-        ImportProductAttributeStrategyInterface ...$strategies
+        iterable $strategies
     ) {
         $this->attributeQuery = $attributeQuery;
+        Assert::allIsInstanceOf($strategies, ImportProductAttributeStrategyInterface::class);
         $this->strategies = $strategies;
     }
 
@@ -45,9 +47,11 @@ class ImportProductAttributeBuilder
         foreach ($attributes as $code => $value) {
             $code = new AttributeCode($code);
             $id = $this->attributeQuery->findAttributeIdByCode($code);
-            Assert::notNull($id, sprintf('Attribute %s not exists', $code));
+            if (null === $id) {
+                throw new ImportException('Missing {code} attribute.', ['{code}' => $code->getValue()]);
+            }
             $type = $this->attributeQuery->findAttributeType($id);
-            Assert::notNull($type, sprintf('Attribute type %s not exists', $code));
+            Assert::notNull($type, sprintf('Attribute type %s not exists', $code->getValue()));
 
             $result[$code->getValue()] = null;
 

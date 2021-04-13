@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -31,7 +31,7 @@ use Ergonode\Attribute\Domain\Entity\AbstractOption;
 class OptionReadAction
 {
     /**
-     * @IsGranted("ATTRIBUTE_READ")
+     * @IsGranted("ATTRIBUTE_GET_OPTION")
      *
      * @SWG\Tag(name="Attribute")
      * @SWG\Parameter(

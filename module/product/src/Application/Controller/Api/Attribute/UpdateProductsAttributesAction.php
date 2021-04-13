@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Ergonode\Product\Application\Controller\Api\Attribute;
 
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,9 +49,8 @@ class UpdateProductsAttributesAction
         $this->commandFactory = $commandFactory;
     }
 
-
     /**
-     * @IsGranted("PRODUCT_UPDATE")
+     * @IsGranted("PRODUCT_PATCH_ATTRIBUTES")
      *
      * @SWG\Tag(name="Product")
      *

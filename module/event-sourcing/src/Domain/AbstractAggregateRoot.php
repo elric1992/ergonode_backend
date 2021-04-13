@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,15 +10,11 @@ declare(strict_types=1);
 namespace Ergonode\EventSourcing\Domain;
 
 use Ergonode\EventSourcing\Infrastructure\AbstractDeleteEvent;
-use Ergonode\EventSourcing\Infrastructure\DomainEventInterface;
+use Ergonode\SharedKernel\Domain\AggregateEventInterface;
 use Ergonode\EventSourcing\Infrastructure\Envelope\DomainEventEnvelope;
 use Ergonode\EventSourcing\Infrastructure\Stream\DomainEventStream;
 use Ergonode\SharedKernel\Domain\AggregateId;
-use JMS\Serializer\Annotation as JMS;
 
-/**
- * @JMS\ExclusionPolicy("all")
- */
 abstract class AbstractAggregateRoot
 {
     protected int $sequence = 0;
@@ -33,7 +29,7 @@ abstract class AbstractAggregateRoot
     /**
      * @throws \Exception
      */
-    public function apply(DomainEventInterface $event): void
+    public function apply(AggregateEventInterface $event): void
     {
         $recordedAt = new \DateTime();
         $this->handle($event, $recordedAt);
@@ -57,6 +53,11 @@ abstract class AbstractAggregateRoot
         return $result;
     }
 
+    public function isNew(): bool
+    {
+        return 0 === count($this->events) - $this->sequence;
+    }
+
     public function getSequence(): int
     {
         return $this->sequence;
@@ -70,7 +71,7 @@ abstract class AbstractAggregateRoot
         return [];
     }
 
-    private function handle(DomainEventInterface $event, \DateTime $recordedAt): void
+    private function handle(AggregateEventInterface $event, \DateTime $recordedAt): void
     {
         if (!$event instanceof AbstractDeleteEvent) {
             $classArray = explode('\\', get_class($event));

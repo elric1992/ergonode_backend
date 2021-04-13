@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -22,6 +22,8 @@ interface ProductQueryInterface
 {
     public function findProductIdBySku(Sku $sku): ?ProductId;
 
+    public function findSkuByProductId(ProductId $id): ?Sku;
+
     /**
      * @return array
      */
@@ -41,6 +43,13 @@ interface ProductQueryInterface
      * @return array
      */
     public function getDictionary(): array;
+
+    /**
+     * @param ProductId[] $productIds
+     *
+     * @return string[]
+     */
+    public function getOthersIds(array $productIds): array;
 
     /**
      * @return array
@@ -98,4 +107,14 @@ interface ProductQueryInterface
         string $field = null,
         ?string $order = 'ASC'
     ): array;
+
+    /**
+     * @return AttributeId[]
+     */
+    public function findAttributeIdsBySku(Sku $sku): array;
+
+    /**
+     * @return AttributeId[]
+     */
+    public function findAttributeIdsByProductId(ProductId $productId): array;
 }

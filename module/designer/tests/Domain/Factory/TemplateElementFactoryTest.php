@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,13 +10,14 @@ declare(strict_types=1);
 namespace Ergonode\Designer\Tests\Domain\Factory;
 
 use Ergonode\Designer\Domain\Factory\TemplateElementFactory;
-use Ergonode\Designer\Domain\Resolver\TemplateElementTypeResolver;
 use Ergonode\Designer\Domain\ValueObject\Position;
 use Ergonode\Designer\Domain\ValueObject\Size;
-use Ergonode\Designer\Domain\ValueObject\TemplateElementPropertyInterface;
-use JMS\Serializer\SerializerInterface;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Ergonode\Designer\Domain\Entity\TemplateElementInterface;
+use Ergonode\Designer\Domain\Entity\Element\AttributeTemplateElement;
+use Ergonode\Designer\Domain\Resolver\TemplateElementTypeResolver;
 
 class TemplateElementFactoryTest extends TestCase
 {
@@ -30,8 +31,8 @@ class TemplateElementFactoryTest extends TestCase
     protected function setUp(): void
     {
         $this->serializer = $this->createMock(SerializerInterface::class);
-        $templateElement = $this->createMock(TemplateElementPropertyInterface::class);
-        $this->serializer->method('deserialize')->willReturn($templateElement);
+        $templateElement = $this->createMock(TemplateElementInterface::class);
+        $this->serializer->expects(self::once())->method('deserialize')->willReturn($templateElement);
         $this->resolver = $this->createMock(TemplateElementTypeResolver::class);
         $this->resolver->method('resolve')->willReturn('Resolver type');
     }
@@ -43,12 +44,8 @@ class TemplateElementFactoryTest extends TestCase
         /** @var Size|MockObject $size */
         $size = $this->createMock(Size::class);
 
-        $type = 'Any Type';
+        $type = AttributeTemplateElement::TYPE;
         $factory = new TemplateElementFactory($this->resolver, $this->serializer);
-        $element = $factory->create($position, $size, $type);
-
-        $this->assertEquals($position, $element->getPosition());
-        $this->assertEquals($type, $element->getType());
-        $this->assertNotEmpty($element->getProperties());
+        $factory->create($position, $size, $type);
     }
 }

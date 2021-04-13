@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -26,14 +26,15 @@ class LanguageTreeBuilder
     public function build(LanguageNode $node): NestedSetTree
     {
         $nestedSetTree = new NestedSetTree();
+        $language = $this->query->getLanguageById($node->getLanguageId()->getValue());
         $nestedSetTree->addRoot(
             $node->getLanguageId(),
-            $this->query->getLanguageById($node->getLanguageId()->getValue())['code']
+            $language->getCode()
         );
 
 
         foreach ($node->getChildren() as $child) {
-            $this->buildBranch($nestedSetTree, $child);
+            $this->buildBranch($nestedSetTree, $child, $node);
         }
 
 
@@ -43,16 +44,17 @@ class LanguageTreeBuilder
     /**
      * @throws \Exception
      */
-    private function buildBranch(NestedSetTree $nestedSetTree, LanguageNode $node): void
+    private function buildBranch(NestedSetTree $nestedSetTree, LanguageNode $node, LanguageNode $parent): void
     {
+        $language = $this->query->getLanguageById($node->getLanguageId()->getValue());
         $nestedSetTree->addNode(
             $node->getLanguageId(),
-            $this->query->getLanguageById($node->getLanguageId()->getValue())['code'],
-            $node->getParent()->getLanguageId()
+            $language->getCode(),
+            $parent->getLanguageId()
         );
 
         foreach ($node->getChildren() as $child) {
-            $this->buildBranch($nestedSetTree, $child);
+            $this->buildBranch($nestedSetTree, $child, $node);
         }
     }
 }

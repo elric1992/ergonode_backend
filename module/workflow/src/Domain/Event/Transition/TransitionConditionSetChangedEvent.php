@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,27 +10,16 @@ declare(strict_types=1);
 namespace Ergonode\Workflow\Domain\Event\Transition;
 
 use Ergonode\SharedKernel\Domain\Aggregate\ConditionSetId;
-
-use Ergonode\EventSourcing\Infrastructure\DomainEventInterface;
 use Ergonode\SharedKernel\Domain\Aggregate\TransitionId;
 use Ergonode\SharedKernel\Domain\Aggregate\WorkflowId;
-use JMS\Serializer\Annotation as JMS;
+use Ergonode\SharedKernel\Domain\AggregateEventInterface;
 
-class TransitionConditionSetChangedEvent implements DomainEventInterface
+class TransitionConditionSetChangedEvent implements AggregateEventInterface
 {
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\WorkflowId")
-     */
     private WorkflowId $id;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\TransitionId")
-     */
     private TransitionId $transitionId;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\ConditionSetId")
-     */
     private ?ConditionSetId $conditionSetId;
 
     public function __construct(WorkflowId $id, TransitionId $transitionId, ?ConditionSetId $conditionSetId = null)

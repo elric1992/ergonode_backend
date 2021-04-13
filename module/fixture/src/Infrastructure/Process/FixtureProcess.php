@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,13 +12,13 @@ namespace Ergonode\Fixture\Infrastructure\Process;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ConnectionException;
 use Ergonode\EventSourcing\Domain\AbstractAggregateRoot;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
-use Ergonode\EventSourcing\Infrastructure\DomainCommandInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\DomainCommandInterface;
 use Ergonode\Fixture\Exception\FixtureException;
 use Ergonode\Fixture\Infrastructure\Loader\FixtureLoader;
 use Faker\Generator;
 use Nelmio\Alice\Loader\NativeLoader;
-use Ergonode\EventSourcing\Infrastructure\Manager\EventStoreManager;
+use Ergonode\EventSourcing\Infrastructure\Manager\EventStoreManagerInterface;
 
 class FixtureProcess
 {
@@ -28,7 +28,7 @@ class FixtureProcess
 
     private CommandBusInterface $commandBus;
 
-    private EventStoreManager $manager;
+    private EventStoreManagerInterface $manager;
 
     private Connection $connection;
 
@@ -36,7 +36,7 @@ class FixtureProcess
         FixtureLoader $loader,
         Generator $generator,
         CommandBusInterface $commandBus,
-        EventStoreManager $manager,
+        EventStoreManagerInterface $manager,
         Connection $connection
     ) {
         $this->loader = $loader;
@@ -70,7 +70,7 @@ class FixtureProcess
             $this->connection->commit();
         } catch (\Throwable $exception) {
             $this->connection->rollBack();
-            throw new FixtureException('Cant process fixtures', 0, $exception);
+            throw new FixtureException('Can\'t process fixtures', 0, $exception);
         }
     }
 }

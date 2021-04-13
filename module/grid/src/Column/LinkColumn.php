@@ -1,13 +1,15 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
 declare(strict_types=1);
 
 namespace Ergonode\Grid\Column;
+
+use Ergonode\Grid\GridConfigurationInterface;
 
 class LinkColumn extends AbstractColumn
 {
@@ -43,5 +45,10 @@ class LinkColumn extends AbstractColumn
     public function getLinks(): array
     {
         return $this->links;
+    }
+
+    public function supportView(string $view): bool
+    {
+        return GridConfigurationInterface::VIEW_GRID === $view;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -8,11 +8,9 @@ declare(strict_types=1);
 
 namespace Ergonode\ImporterMagento1\Infrastructure\Reader;
 
-use Ergonode\Importer\Infrastructure\Converter\ConverterInterface;
 use Ergonode\Importer\Domain\Entity\Import;
 use Ergonode\Reader\Infrastructure\Exception\ReaderException;
 use Ergonode\ImporterMagento1\Infrastructure\Model\ProductModel;
-use Ergonode\Product\Domain\ValueObject\Sku;
 use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
 
 class Magento1CsvReader
@@ -70,7 +68,7 @@ class Magento1CsvReader
         $sku = null;
         $type = null;
         $template = null;
-        $code = 'default';
+        $code = null;
         $product = [];
 
         $lines = $this->getLines();
@@ -103,9 +101,12 @@ class Magento1CsvReader
         }
 
         if (!empty($product)) {
-            $result = new ProductModel(new Sku($sku), $type, $template);
+            $result = new ProductModel($sku, $type, $template, $product[null]);
 
             foreach ($product as $store => $version) {
+                if (empty($store)) {
+                    continue;
+                }
                 $result->set($store, $version);
             }
 
@@ -176,7 +177,6 @@ class Magento1CsvReader
         $result = [];
 
         foreach ($attributes as $code => $attribute) {
-            /** @var ConverterInterface $converter */
             $result[$attribute->getCode()->getValue()] = $record[$code];
         }
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,32 +11,25 @@ namespace Ergonode\Product\Domain\Event;
 
 use Ergonode\Attribute\Domain\ValueObject\AttributeCode;
 
-use Ergonode\EventSourcing\Infrastructure\DomainEventInterface;
 use Ergonode\SharedKernel\Domain\Aggregate\ProductId;
+use Ergonode\SharedKernel\Domain\AggregateEventInterface;
 use Ergonode\Value\Domain\ValueObject\ValueInterface;
-use JMS\Serializer\Annotation as JMS;
 
-class ProductValueChangedEvent implements DomainEventInterface
+class ProductValueChangedEvent implements AggregateEventInterface
 {
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\ProductId")
-     */
     private ProductId $id;
 
-    /**
-     * @JMS\Type("Ergonode\Attribute\Domain\ValueObject\AttributeCode")
-     */
     private AttributeCode $code;
 
-    /**
-     * @JMS\Type("Ergonode\Value\Domain\ValueObject\ValueInterface")
-     */
+    private ValueInterface $from;
+
     private ValueInterface $to;
 
-    public function __construct(ProductId $id, AttributeCode $code, ValueInterface $to)
+    public function __construct(ProductId $id, AttributeCode $code, ValueInterface $from, ValueInterface $to)
     {
         $this->id = $id;
         $this->code = $code;
+        $this->from = $from;
         $this->to = $to;
     }
 
@@ -48,6 +41,11 @@ class ProductValueChangedEvent implements DomainEventInterface
     public function getAttributeCode(): AttributeCode
     {
         return $this->code;
+    }
+
+    public function getFrom(): ValueInterface
+    {
+        return $this->from;
     }
 
     public function getTo(): ValueInterface

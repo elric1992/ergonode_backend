@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,7 +12,7 @@ namespace Ergonode\Product\Application\Controller\Api\Relations;
 use Ergonode\Api\Application\Exception\FormValidationHttpException;
 use Ergonode\Api\Application\Response\EmptyResponse;
 use Ergonode\Core\Domain\ValueObject\Language;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Ergonode\Product\Application\Form\Product\Relation\ProductChildBySkusForm;
 use Ergonode\Product\Application\Model\Product\Relation\ProductChildBySkusFormModel;
 use Ergonode\Product\Domain\Command\Relations\AddProductChildrenCommand;
@@ -55,7 +55,7 @@ class ProductAddChildFromSkusAction extends AbstractController
     }
 
     /**
-     * @IsGranted("PRODUCT_UPDATE")
+     * @IsGranted("PRODUCT_POST_RELATIONS_CHILDREN_SKU")
      *
      * @SWG\Tag(name="Product")
      * @SWG\Parameter(
@@ -80,8 +80,12 @@ class ProductAddChildFromSkusAction extends AbstractController
     public function __invoke(Language $language, AbstractProduct $product, Request $request): Response
     {
         try {
-            $model = new ProductChildBySkusFormModel();
-            $form = $this->formFactory->create(ProductChildBySkusForm::class, $model);
+            $model = new ProductChildBySkusFormModel($product);
+            $form = $this->formFactory->create(
+                ProductChildBySkusForm::class,
+                $model,
+                ['validation_groups' => [$product->getType()]]
+            );
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {

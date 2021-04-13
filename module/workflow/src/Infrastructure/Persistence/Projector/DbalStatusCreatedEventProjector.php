@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace Ergonode\Workflow\Infrastructure\Persistence\Projector;
 
 use Doctrine\DBAL\Connection;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 use Ergonode\Workflow\Domain\Event\Status\StatusCreatedEvent;
-use JMS\Serializer\SerializerInterface;
 
 class DbalStatusCreatedEventProjector
 {
@@ -37,8 +37,8 @@ class DbalStatusCreatedEventProjector
             [
                 'id' => $event->getAggregateId()->getValue(),
                 'code' => $event->getCode(),
-                'name' => $this->serializer->serialize($event->getName()->getTranslations(), 'json'),
-                'description' => $this->serializer->serialize($event->getDescription()->getTranslations(), 'json'),
+                'name' => $this->serializer->serialize($event->getName()->getTranslations()),
+                'description' => $this->serializer->serialize($event->getDescription()->getTranslations()),
                 'color' => $event->getColor()->getValue(),
             ]
         );

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,9 +12,15 @@ use Ergonode\ImporterErgonode1\Infrastructure\Model\AttributeModel;
 
 class ErgonodeAttributeReader extends AbstractErgonodeReader
 {
-    /**
-     * @throws \JsonException
-     */
+    private const KEYS = [
+        '_code',
+        '_type',
+        '_scope',
+        '_name',
+        '_hint',
+        '_placeholder',
+    ];
+
     public function read(): ?AttributeModel
     {
         $item = null;
@@ -24,34 +30,33 @@ class ErgonodeAttributeReader extends AbstractErgonodeReader
 
             if (null === $item) {
                 $item = new AttributeModel(
-                    $record['_id'],
                     $record['_code'],
                     $record['_type'],
                     $record['_scope']
                 );
-            } elseif ($item->getId() !== $record['_id']) {
+            } elseif ($item->getCode() !== $record['_code']) {
                 break;
             }
 
-            $item->addName($record['_language'], $record['_name']);
-            $item->addHint($record['_language'], $record['_hint']);
-            $item->addPlaceholder($record['_language'], $record['_placeholder']);
-            $this->mapParameters($item, $record['_parameters']);
+            if (!empty($record['_name'])) {
+                $item->addName($record['_language'], $record['_name']);
+            }
+            if (!empty($record['_hint'])) {
+                $item->addHint($record['_language'], $record['_hint']);
+            }
+            if (!empty($record['_placeholder'])) {
+                $item->addPlaceholder($record['_language'], $record['_placeholder']);
+            }
+
+            foreach ($record as $key => $value) {
+                if ('' !== $value && !array_key_exists($key, self::KEYS)) {
+                    $item->addParameter($key, $value);
+                }
+            }
 
             $this->records->next();
         }
 
         return $item;
-    }
-
-    /**
-     * @throws \JsonException
-     */
-    private function mapParameters(AttributeModel $model, string $parameters): void
-    {
-        $parameters = json_decode($parameters, true, 512, JSON_THROW_ON_ERROR);
-        foreach ($parameters as $key => $value) {
-            $model->addParameter($key, $value);
-        }
     }
 }

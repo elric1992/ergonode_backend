@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -31,50 +31,26 @@ use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
 use Ergonode\SharedKernel\Domain\Aggregate\MultimediaId;
 use Ergonode\SharedKernel\Domain\Aggregate\TemplateGroupId;
 use Ergonode\SharedKernel\Domain\Aggregate\TemplateId;
-use JMS\Serializer\Annotation as JMS;
 
 class Template extends AbstractAggregateRoot
 {
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\TemplateId")
-     */
     private TemplateId $id;
 
-    /**
-     * @JMS\Type("string")
-     */
     private string $name;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\MultimediaId")
-     */
     private ?MultimediaId $imageId;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\TemplateGroupId")
-     */
     private TemplateGroupId $groupId;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\AttributeId")
-     */
     private ?AttributeId $defaultLabel;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\AttributeId")
-     */
     private ?AttributeId $defaultImage;
 
     /**
-     * @var TemplateElement[]
-     *
-     * @JMS\Type("array<Ergonode\Designer\Domain\Entity\TemplateElement>")
+     * @var TemplateElementInterface[]
      */
     private array $elements;
 
-    /**
-     * @throws \Exception
-     */
     public function __construct(
         TemplateId $id,
         TemplateGroupId $groupId,
@@ -184,7 +160,7 @@ class Template extends AbstractAggregateRoot
         return false;
     }
 
-    public function getElement(Position $position): TemplateElement
+    public function getElement(Position $position): TemplateElementInterface
     {
         foreach ($this->elements as $element) {
             if ($position->isEqual($element->getPosition())) {
@@ -197,7 +173,7 @@ class Template extends AbstractAggregateRoot
     }
 
     /**
-     * @return ArrayCollection|TemplateElement[]
+     * @return ArrayCollection|TemplateElementInterface[]
      */
     public function getElements(): ArrayCollection
     {
@@ -263,7 +239,7 @@ class Template extends AbstractAggregateRoot
     /**
      * @throws \Exception
      */
-    public function addElement(TemplateElement $element): void
+    public function addElement(TemplateElementInterface $element): void
     {
         $position = $element->getPosition();
         if ($this->hasElement($element->getPosition())) {
@@ -277,7 +253,7 @@ class Template extends AbstractAggregateRoot
     /**
      * @throws \Exception
      */
-    public function changeElement(TemplateElement $element): void
+    public function changeElement(TemplateElementInterface $element): void
     {
         $position = $element->getPosition();
 

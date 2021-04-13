@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -43,7 +43,7 @@ class ProductReadInheritedValuesByLanguageAction
     }
 
     /**
-     * @IsGranted("PRODUCT_READ")
+     * @IsGranted("PRODUCT_GET_INHERITED")
      *
      * @SWG\Tag(name="Product")
      * @SWG\Parameter(
@@ -85,10 +85,11 @@ class ProductReadInheritedValuesByLanguageAction
             'id' => $product->getId()->getValue(),
         ];
         foreach ($product->getAttributes() as $key => $value) {
-            $attributeId = AttributeId::fromKey($key);
+            $attributeId = AttributeId::fromKey((string) $key);
             $attribute = $this->attributeRepository->load($attributeId);
             if ($attribute) {
-                $result['attributes'][$key] = $this->calculator->calculate($attribute, $value, $productLanguage);
+                $scope = $attribute->getScope();
+                $result['attributes'][$key] = $this->calculator->calculate($scope, $value, $productLanguage);
             }
         }
 

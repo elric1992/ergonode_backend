@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+/**
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,7 +10,7 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Mapper\Product;
 
 use Ergonode\Attribute\Domain\Repository\AttributeRepositoryInterface;
 use Ergonode\Core\Domain\ValueObject\Language;
-use Ergonode\Exporter\Domain\Entity\Export;
+use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Infrastructure\Calculator\AttributeTranslationInheritanceCalculator;
 use Ergonode\ExporterShopware6\Infrastructure\Exception\Mapper\ProductToLongValueException;
@@ -62,7 +62,7 @@ class ProductSEOMetaTitleMapper implements ProductMapperInterface
             $product->getAttribute($attribute->getCode()),
             $language ?: $channel->getDefaultLanguage()
         );
-        if (mb_strlen($value) > self::MAX_LENGTH) {
+        if ($value && mb_strlen($value) > self::MAX_LENGTH) {
             throw new ProductToLongValueException($attribute->getCode(), $product->getSku(), self::MAX_LENGTH);
         }
 

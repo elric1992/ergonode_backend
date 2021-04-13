@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Ergonode\Reader\Infrastructure\Formatter;
 
 use Ergonode\Reader\Infrastructure\FormatterInterface;
-use JMS\Serializer\Annotation as JMS;
 
 class EncodingFormatter implements FormatterInterface
 {
@@ -18,9 +17,6 @@ class EncodingFormatter implements FormatterInterface
 
     private const ENCODING = 'UTF-8//IGNORE';
 
-    /**
-     * @JMS\Type("string")
-     */
     private string $encoding;
 
     public function __construct(string $encoding)

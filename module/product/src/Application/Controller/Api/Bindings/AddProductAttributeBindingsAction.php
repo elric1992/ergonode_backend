@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -19,7 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Ergonode\Api\Application\Exception\FormValidationHttpException;
 use Symfony\Component\PropertyAccess\Exception\InvalidPropertyPathException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Ergonode\Product\Domain\Command\Bindings\AddProductBindingCommand;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
@@ -48,7 +48,7 @@ class AddProductAttributeBindingsAction extends AbstractController
     }
 
     /**
-     * @IsGranted("PRODUCT_UPDATE")
+     * @IsGranted("PRODUCT_POST_BINDING")
      *
      * @SWG\Tag(name="Product")
      * @SWG\Parameter(
@@ -80,7 +80,7 @@ class AddProductAttributeBindingsAction extends AbstractController
     public function __invoke(Language $language, AbstractProduct $product, Request $request): Response
     {
         try {
-            $model = new ProductBindFormModel();
+            $model = new ProductBindFormModel($product);
             $form = $this->formFactory->create(ProductBindForm::class, $model);
             $form->handleRequest($request);
 

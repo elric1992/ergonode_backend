@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -13,11 +13,12 @@ use Ergonode\Account\Infrastructure\Provider\AuthenticatedUserProviderInterface;
 use Ergonode\Api\Application\Response\EmptyResponse;
 use Ergonode\Comment\Domain\Command\DeleteCommentCommand;
 use Ergonode\Comment\Domain\Entity\Comment;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
 
 /**
  * @Route(
@@ -40,6 +41,8 @@ class CommentDeleteAction
     }
 
     /**
+     * @IsGranted("COMMENT_DELETE")
+     *
      * @SWG\Tag(name="Comment")
      * @SWG\Parameter(
      *     name="language",

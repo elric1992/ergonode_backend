@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -13,13 +13,9 @@ use Ergonode\Attribute\Domain\Command\Attribute\AbstractUpdateAttributeCommand;
 use Ergonode\Attribute\Domain\ValueObject\AttributeScope;
 use Ergonode\Core\Domain\ValueObject\TranslatableString;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
-use JMS\Serializer\Annotation as JMS;
 
 class UpdateTextareaAttributeCommand extends AbstractUpdateAttributeCommand
 {
-    /**
-     * @JMS\Type("boolean")
-     */
     private bool $richEdit;
 
     /**

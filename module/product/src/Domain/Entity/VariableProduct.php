@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -13,7 +13,6 @@ use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
 use Ergonode\Product\Domain\Event\Bind\BindAddedToProductEvent;
 use Ergonode\Attribute\Domain\Entity\Attribute\SelectAttribute;
 use Ergonode\Product\Domain\Event\Bind\BindRemovedFromProductEvent;
-use JMS\Serializer\Annotation as JMS;
 use Webmozart\Assert\Assert;
 
 class VariableProduct extends AbstractAssociatedProduct
@@ -22,14 +21,9 @@ class VariableProduct extends AbstractAssociatedProduct
 
     /**
      * @var AttributeId[]
-     *
-     * @JMS\Type("array<Ergonode\SharedKernel\Domain\Aggregate\AttributeId>");
      */
     private array $bindings = [];
 
-    /**
-     * @JMS\Type("string");
-     */
     public function getType(): string
     {
         return self::TYPE;

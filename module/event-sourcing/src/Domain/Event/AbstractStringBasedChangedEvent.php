@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -9,14 +9,10 @@ declare(strict_types=1);
 
 namespace Ergonode\EventSourcing\Domain\Event;
 
-use Ergonode\EventSourcing\Infrastructure\DomainEventInterface;
-use JMS\Serializer\Annotation as JMS;
+use Ergonode\SharedKernel\Domain\AggregateEventInterface;
 
-abstract class AbstractStringBasedChangedEvent implements DomainEventInterface
+abstract class AbstractStringBasedChangedEvent implements AggregateEventInterface
 {
-    /**
-     * @JMS\Type("string")
-     */
     private ?string $to;
 
     public function __construct(?string $to)

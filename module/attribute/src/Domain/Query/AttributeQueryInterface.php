@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -19,6 +19,7 @@ use Ergonode\SharedKernel\Domain\Aggregate\AttributeGroupId;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
 use Ergonode\SharedKernel\Domain\Aggregate\UnitId;
 use Ergonode\SharedKernel\Domain\Aggregate\MultimediaId;
+use Ergonode\Attribute\Domain\ValueObject\AttributeScope;
 
 interface AttributeQueryInterface
 {
@@ -28,7 +29,11 @@ interface AttributeQueryInterface
 
     public function findAttributeIdByCode(AttributeCode $code): ?AttributeId;
 
+    public function findAttributeCodeById(AttributeId $id): ?AttributeCode;
+
     public function findAttributeType(AttributeId $id): ?AttributeType;
+
+    public function findAttributeScope(AttributeId $id): ?AttributeScope;
 
     /**
      * @return array|null
@@ -40,6 +45,8 @@ interface AttributeQueryInterface
      */
     public function getAllAttributeCodes(): array;
 
+
+
     /**
      * @param array $types
      *
@@ -48,11 +55,10 @@ interface AttributeQueryInterface
     public function getDictionary(array $types = []): array;
 
     /**
-     * @param array $types
-     *
-     * @return array
+     * @param string[] $types
+     * @return string[]
      */
-    public function getAttributeCodes(array $types = []): array;
+    public function getAttributeCodes(array $types = [], bool $includeSystem = true): array;
 
     public function findAttributeOption(AttributeId $id, OptionKey $key): ?OptionInterface;
 

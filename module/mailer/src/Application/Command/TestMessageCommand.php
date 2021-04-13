@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Ergonode\Mailer\Application\Command;
 
 use Ergonode\Core\Domain\ValueObject\Language;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Ergonode\Mailer\Domain\Command\SendMailCommand;
 use Ergonode\Mailer\Domain\TestMail;
 use Ergonode\SharedKernel\Domain\ValueObject\Email;

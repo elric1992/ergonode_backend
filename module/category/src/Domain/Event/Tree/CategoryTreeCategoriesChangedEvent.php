@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,21 +11,15 @@ namespace Ergonode\Category\Domain\Event\Tree;
 
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 use Ergonode\Category\Domain\ValueObject\Node;
-use Ergonode\EventSourcing\Infrastructure\DomainEventInterface;
-use JMS\Serializer\Annotation as JMS;
+use Ergonode\SharedKernel\Domain\AggregateEventInterface;
 use Webmozart\Assert\Assert;
 
-class CategoryTreeCategoriesChangedEvent implements DomainEventInterface
+class CategoryTreeCategoriesChangedEvent implements AggregateEventInterface
 {
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId")
-     */
     private CategoryTreeId $id;
 
     /**
      * @var Node[]
-     *
-     * @JMS\Type("array<Ergonode\Category\Domain\ValueObject\Node>")
      */
     private array $categories;
 

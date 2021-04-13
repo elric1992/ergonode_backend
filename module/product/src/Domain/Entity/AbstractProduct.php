@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -21,40 +21,26 @@ use Ergonode\Product\Domain\ValueObject\Sku;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
 use Ergonode\SharedKernel\Domain\Aggregate\ProductId;
 use Ergonode\Value\Domain\ValueObject\ValueInterface;
-use JMS\Serializer\Annotation as JMS;
 use Webmozart\Assert\Assert;
 use Ergonode\SharedKernel\Domain\Aggregate\TemplateId;
 use Ergonode\Product\Domain\Event\ProductTemplateChangedEvent;
 
 abstract class AbstractProduct extends AbstractAggregateRoot implements ProductInterface
 {
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\ProductId")
-     */
     protected ProductId $id;
 
-    /**
-     * @JMS\Type("Ergonode\Product\Domain\ValueObject\Sku")
-     */
     protected Sku $sku;
 
     /**
      * @var ValueInterface[]
-     *
-     * @JMS\Type("array<string, Ergonode\Value\Domain\ValueObject\ValueInterface>")
      */
     protected array $attributes;
 
     /**
      * @var CategoryId[]
-     *
-     * @JMS\Type("array<Ergonode\SharedKernel\Domain\Aggregate\CategoryId>")
      */
     protected array $categories;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\TemplateId")
-     */
     protected TemplateId $templateId;
 
     /**
@@ -88,10 +74,6 @@ abstract class AbstractProduct extends AbstractAggregateRoot implements ProductI
         }
     }
 
-    /**
-     * @JMS\VirtualProperty()
-     * @JMS\SerializedName("type")
-     */
     abstract public function getType(): string;
 
     public function getId(): ProductId
@@ -250,6 +232,7 @@ abstract class AbstractProduct extends AbstractAggregateRoot implements ProductI
                 new ProductValueChangedEvent(
                     $this->id,
                     $attributeCode,
+                    $this->attributes[$attributeCode->getValue()],
                     $value
                 )
             );

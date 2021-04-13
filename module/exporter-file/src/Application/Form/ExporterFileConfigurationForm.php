@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -63,6 +63,8 @@ class ExporterFileConfigurationForm extends AbstractType
                     'label' => 'Export type',
                     'choices' => $exportType,
                     'property_path' => 'exportType',
+                    'help' => 'Option "incremental" works only within the context of products. '
+                        .'Once you edit or add new products only those changes will appear in the export.',
                 ]
             )
             ->add(
@@ -79,7 +81,7 @@ class ExporterFileConfigurationForm extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'translation_domain' => 'exporter',
+                'translation_domain' => 'channel',
                 'data_class' => ExporterFileConfigurationModel::class,
                 'allow_extra_fields' => true,
             ]

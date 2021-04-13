@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -8,14 +8,14 @@ declare(strict_types=1);
 
 namespace Ergonode\ImporterErgonode1\Infrastructure\Processor\Step;
 
-use Ergonode\Attribute\Domain\ValueObject\AttributeCode;
-use Ergonode\Attribute\Domain\ValueObject\AttributeScope;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\ImporterErgonode1\Domain\Entity\ErgonodeZipSource;
+use Ergonode\ImporterErgonode1\Infrastructure\Resolver\AttributeCommandResolver;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Ergonode\Importer\Domain\Entity\Import;
-use Ergonode\ImporterErgonode1\Domain\Command\Import\ImportAttributeCommand;
 use Ergonode\ImporterErgonode1\Infrastructure\Processor\ErgonodeProcessorStepInterface;
 use Ergonode\ImporterErgonode1\Infrastructure\Reader\ErgonodeAttributeReader;
-use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
+use Ergonode\SharedKernel\Domain\Aggregate\ImportLineId;
+use Ergonode\Importer\Domain\Repository\ImportRepositoryInterface;
 
 class ErgonodeAttributesProcessorStep implements ErgonodeProcessorStepInterface
 {
@@ -23,28 +23,34 @@ class ErgonodeAttributesProcessorStep implements ErgonodeProcessorStepInterface
 
     private CommandBusInterface $commandBus;
 
-    public function __construct(CommandBusInterface $commandBus)
-    {
+    private ImportRepositoryInterface $importRepository;
+
+    private AttributeCommandResolver $attributeCommandResolver;
+
+    public function __construct(
+        CommandBusInterface $commandBus,
+        ImportRepositoryInterface $importRepository,
+        AttributeCommandResolver $attributeCommandResolver
+    ) {
         $this->commandBus = $commandBus;
+        $this->importRepository = $importRepository;
+        $this->attributeCommandResolver = $attributeCommandResolver;
     }
 
-    public function __invoke(Import $import, string $directory): void
+    public function __invoke(Import $import, ErgonodeZipSource $source, string $directory): void
     {
+        if (!$source->import(ErgonodeZipSource::ATTRIBUTES)) {
+            return;
+        }
+
         $reader = new ErgonodeAttributeReader($directory, self::FILENAME);
 
         while ($attribute = $reader->read()) {
-            $command = new ImportAttributeCommand(
-                $import->getId(),
-                new AttributeId($attribute->getId()),
-                new AttributeCode($attribute->getCode()),
-                $attribute->getType(),
-                new AttributeScope($attribute->getScope()),
-                $attribute->getParameters(),
-                $attribute->getName(),
-                $attribute->getHint(),
-                $attribute->getPlaceholder()
-            );
-            $this->commandBus->dispatch($command);
+            $id = ImportLineId::generate();
+
+            $command = $this->attributeCommandResolver->resolve($id, $import, $attribute);
+            $this->importRepository->addLine($id, $import->getId(), 'ATTRIBUTE');
+            $this->commandBus->dispatch($command, true);
         }
     }
 }

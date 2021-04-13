@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,19 +12,12 @@ namespace Ergonode\Category\Domain\Event;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
 
 use Ergonode\Core\Domain\ValueObject\TranslatableString;
-use Ergonode\EventSourcing\Infrastructure\DomainEventInterface;
-use JMS\Serializer\Annotation as JMS;
+use Ergonode\SharedKernel\Domain\AggregateEventInterface;
 
-class CategoryNameChangedEvent implements DomainEventInterface
+class CategoryNameChangedEvent implements AggregateEventInterface
 {
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\CategoryId")
-     */
     private CategoryId $id;
 
-    /**
-     * @JMS\Type("Ergonode\Core\Domain\ValueObject\TranslatableString")
-     */
     private TranslatableString $to;
 
     public function __construct(CategoryId $id, TranslatableString $to)

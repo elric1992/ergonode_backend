@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -17,10 +17,10 @@ use Ergonode\BatchAction\Domain\Repository\BatchActionRepositoryInterface;
 use Ergonode\BatchAction\Infrastructure\Persistence\Repository\Mapper\DbalBatchActionMapper;
 use Ergonode\BatchAction\Domain\Entity\BatchActionId;
 use Ergonode\BatchAction\Domain\Entity\BatchAction;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 use Ergonode\SharedKernel\Domain\AggregateId;
 use Webmozart\Assert\Assert;
 use Ergonode\BatchAction\Domain\ValueObject\BatchActionMessage;
-use JMS\Serializer\SerializerInterface;
 
 class DbalBatchActionRepository implements BatchActionRepositoryInterface
 {
@@ -118,7 +118,7 @@ class DbalBatchActionRepository implements BatchActionRepositoryInterface
         $success = true;
         $json = null;
         if (!empty($messages)) {
-            $json = $this->serializer->serialize($messages, 'json');
+            $json = $this->serializer->serialize($messages);
             $success = false;
         }
 

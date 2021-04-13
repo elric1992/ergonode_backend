@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
- * See license.txt for license details.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * See LICENSE.txt for license details.
  */
 
 declare(strict_types=1);
@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Ergonode\Api\Application\EventListener;
 
 use Ergonode\Api\Application\Response\AbstractResponse;
-use JMS\Serializer\SerializerInterface;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class ResponseFormatterListener
@@ -32,7 +32,7 @@ class ResponseFormatterListener
         $content = $response->getContent();
 
         if (null !== $content && !is_string($content)) {
-            $content = $this->serializer->serialize($content, 'json');
+            $content = $this->serializer->serialize($content);
             $response->setContent($content);
             $event->setResponse($response);
         }

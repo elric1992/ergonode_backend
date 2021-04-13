@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -16,7 +16,6 @@ use Ergonode\Attribute\Domain\ValueObject\AttributeScope;
 use Ergonode\Attribute\Domain\ValueObject\DateFormat;
 use Ergonode\Core\Domain\ValueObject\TranslatableString;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
-use JMS\Serializer\Annotation as JMS;
 
 abstract class AbstractDateAttribute extends AbstractAttribute
 {
@@ -46,10 +45,6 @@ abstract class AbstractDateAttribute extends AbstractAttribute
         );
     }
 
-    /**
-     * @JMS\VirtualProperty();
-     * @JMS\SerializedName("type")
-     */
     public function getType(): string
     {
         return self::TYPE;

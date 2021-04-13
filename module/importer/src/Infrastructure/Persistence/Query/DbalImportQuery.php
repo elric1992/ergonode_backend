@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -92,6 +92,28 @@ class DbalImportQuery implements ImportQueryInterface
     /**
      * @return array
      */
+    public function getProfileInfo(Language $language): array
+    {
+        return $this->connection->createQueryBuilder()
+            ->select('i.id, status, started_at, ended_at')
+            ->addSelect('s.name')
+            ->addSelect('(SELECT count(*) FROM importer.import_line il WHERE il.import_id = i.id) as items')
+            ->addSelect('(SELECT count(*) FROM importer.import_line il 
+                                WHERE il.import_id = i.id AND il.status IS NOT NULL) AS processed')
+            ->addSelect('(SELECT count(*) FROM importer.import_line il 
+                                WHERE il.import_id = i.id AND il.status = \'success\') AS succeeded')
+            ->addSelect('(SELECT count(*) FROM importer.import_error ie WHERE ie.import_id = i.id) AS errors')
+            ->from(self::TABLE, 'i')
+            ->orderBy('started_at', 'DESC')
+            ->join('i', self::TABLE_SOURCE, 's', 's.id = i.source_id')
+            ->setMaxResults(10)
+            ->execute()
+            ->fetchAll();
+    }
+
+    /**
+     * @return array
+     */
     public function getInformation(ImportId $id, Language $language): array
     {
         $query = $this->getQuery();
@@ -115,10 +137,9 @@ class DbalImportQuery implements ImportQueryInterface
         $qb = $this->connection->createQueryBuilder();
 
         $result = $qb->select('i.id')
-            ->join('i', self::TABLE_SOURCE, 'il', 'il.id = i.source_id')
+            ->from(self::TABLE, 'i')
             ->where($qb->expr()->eq('i.source_id', ':sourceId'))
             ->setParameter(':sourceId', $sourceId->getValue())
-            ->from(self::TABLE, 'i')
             ->execute()
             ->fetchAll(\PDO::FETCH_COLUMN);
 
@@ -170,15 +191,43 @@ class DbalImportQuery implements ImportQueryInterface
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function findActiveImport(SourceId $sourceId): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+
+        $result = $qb->select('i.id')
+            ->from(self::TABLE, 'i')
+            ->where($qb->expr()->eq('i.source_id', ':sourceId'))
+            ->setParameter(':sourceId', $sourceId->getValue())
+            ->andWhere($qb->expr()->isNull('i.ended_at'))
+            ->execute()
+            ->fetchAll(\PDO::FETCH_COLUMN);
+
+        foreach ($result as &$item) {
+            $item = new ImportId($item);
+        }
+
+        return $result;
+    }
+
     private function getQuery(): QueryBuilder
     {
         return $this->connection->createQueryBuilder()
-            ->select('id, status, records, source_id, created_at, updated_at, started_at, ended_at')
+            ->select('id, status, source_id, created_at, updated_at, started_at, ended_at')
             ->addSelect(
                 '(SELECT count(*)
                         FROM importer.import_error il
                         WHERE il.import_id = i.id
                         AND il.message IS NOT NULL) AS errors'
+            )
+            ->addSelect(
+                '(SELECT count(*)
+                        FROM importer.import_line il
+                        WHERE il.import_id = i.id
+                        ) AS records'
             )
             ->from(self::TABLE, 'i');
     }

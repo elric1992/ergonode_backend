@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -13,13 +13,15 @@ use Ergonode\Category\Domain\Query\CategoryQueryInterface;
 use Ergonode\Category\Domain\ValueObject\CategoryCode;
 use Ergonode\Designer\Domain\Query\TemplateQueryInterface;
 use Ergonode\Importer\Infrastructure\Action\Process\Product\ImportProductAttributeBuilder;
+use Ergonode\Importer\Infrastructure\Exception\ImportException;
 use Ergonode\Product\Domain\Entity\SimpleProduct;
+use Ergonode\Product\Domain\Factory\ProductFactoryInterface;
 use Ergonode\Product\Domain\Query\ProductQueryInterface;
 use Ergonode\Product\Domain\Repository\ProductRepositoryInterface;
 use Ergonode\Product\Domain\ValueObject\Sku;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
 use Ergonode\SharedKernel\Domain\Aggregate\ProductId;
-use Webmozart\Assert\Assert;
+use Ergonode\Core\Domain\ValueObject\TranslatableString;
 
 class SimpleProductImportAction
 {
@@ -33,23 +35,27 @@ class SimpleProductImportAction
 
     private ImportProductAttributeBuilder $builder;
 
+    protected ProductFactoryInterface $productFactory;
+
     public function __construct(
         ProductQueryInterface $productQuery,
         ProductRepositoryInterface $repository,
         TemplateQueryInterface $templateQuery,
         CategoryQueryInterface $categoryQuery,
-        ImportProductAttributeBuilder $builder
+        ImportProductAttributeBuilder $builder,
+        ProductFactoryInterface $productFactory
     ) {
         $this->productQuery = $productQuery;
         $this->repository = $repository;
         $this->templateQuery = $templateQuery;
         $this->categoryQuery = $categoryQuery;
         $this->builder = $builder;
+        $this->productFactory = $productFactory;
     }
 
     /**
-     * @param array $categories
-     * @param array $attributes
+     * @param CategoryCode[]       $categories
+     * @param TranslatableString[] $attributes
      *
      * @throws \Exception
      */
@@ -58,15 +64,18 @@ class SimpleProductImportAction
         string $template,
         array $categories,
         array $attributes = []
-    ): void {
+    ): SimpleProduct {
         $templateId = $this->templateQuery->findTemplateIdByCode($template);
-        Assert::notNull($templateId);
+        if (null === $templateId) {
+            throw new ImportException('Missing {template} template.', ['{template}' => $template]);
+        }
         $productId = $this->productQuery->findProductIdBySku($sku);
         $categories = $this->getCategories($categories);
         $attributes = $this->builder->build($attributes);
 
         if (!$productId) {
-            $product = new SimpleProduct(
+            $product = $this->productFactory->create(
+                SimpleProduct::TYPE,
                 ProductId::generate(),
                 $sku,
                 $templateId,
@@ -75,14 +84,17 @@ class SimpleProductImportAction
             );
         } else {
             $product = $this->repository->load($productId);
-            Assert::isInstanceOf($product, SimpleProduct::class);
+            if (!$product instanceof SimpleProduct) {
+                throw new ImportException('Product {sku} is not a simple product', ['{sku}' => $sku]);
+            }
+            $product->changeTemplate($templateId);
+            $product->changeCategories($categories);
+            $product->changeAttributes($attributes);
         }
 
-        $product->changeTemplate($templateId);
-        $product->changeCategories($categories);
-        $product->changeAttributes($attributes);
-
         $this->repository->save($product);
+
+        return $product;
     }
 
     /**
@@ -95,8 +107,10 @@ class SimpleProductImportAction
         $result = [];
         foreach ($categories as $category) {
             $categoryId = $this->categoryQuery->findIdByCode($category);
-            Assert::notNull($categoryId);
-            $categories[] = $categoryId;
+            if (null === $categoryId) {
+                throw new ImportException('Missing {category} category', ['{category}' => $category]);
+            }
+            $result[] = $categoryId;
         }
 
         return $result;

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -13,7 +13,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Types\Types;
 use Ergonode\ProductCollection\Domain\Event\ProductCollectionNameChangedEvent;
-use JMS\Serializer\SerializerInterface;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 
 class DbalProductCollectionNameChangedEventProjector
 {
@@ -37,7 +37,7 @@ class DbalProductCollectionNameChangedEventProjector
         $this->connection->update(
             self::TABLE,
             [
-                'name' => $this->serializer->serialize($event->getTo()->getTranslations(), 'json'),
+                'name' => $this->serializer->serialize($event->getTo()->getTranslations()),
                 'edited_at' => $event->getEditedAt(),
             ],
             [

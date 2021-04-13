@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -51,7 +51,7 @@ class MultimediaFromUrlImportAction
      * @throws FileExistsException
      * @throws FileNotFoundException
      */
-    public function action(ImportId $importId, string $url, string $filename): void
+    public function action(ImportId $importId, string $url, string $filename): MultimediaId
     {
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
         $name = pathinfo($filename, PATHINFO_FILENAME);
@@ -59,36 +59,35 @@ class MultimediaFromUrlImportAction
         $id = $this->multimediaQuery->findIdByFilename($name);
 
         if (!$id) {
-            try {
-                $tmpFile = tempnam(sys_get_temp_dir(), $importId->getValue());
+            $tmpFile = tempnam(sys_get_temp_dir(), $importId->getValue());
 
-                $content = $this->downloader->download($url);
-                file_put_contents($tmpFile, $content);
-                $file = new File($tmpFile);
+            $content = $this->downloader->download($url);
+            file_put_contents($tmpFile, $content);
+            $file = new File($tmpFile);
 
-                $hash = $this->hashService->calculateHash($file);
-                $filename = sprintf('%s.%s', $hash->getValue(), $extension);
-                if (!$this->multimediaStorage->has($filename)) {
-                    $this->multimediaStorage->write($filename, $content);
-                }
-
-                $size = $this->multimediaStorage->getSize($filename);
-                $mime = $this->multimediaStorage->getMimetype($filename);
-
-                $multimedia = new Multimedia(
-                    MultimediaId::generate(),
-                    $name,
-                    $extension,
-                    $size,
-                    $hash,
-                    $mime,
-                );
-
-                $this->repository->save($multimedia);
-                unlink($tmpFile);
-            } catch (\Exception $exception) {
-                throw $exception;
+            $hash = $this->hashService->calculateHash($file);
+            $filename = sprintf('%s.%s', $hash->getValue(), $extension);
+            if (!$this->multimediaStorage->has($filename)) {
+                $this->multimediaStorage->write($filename, $content);
             }
+
+            $size = $this->multimediaStorage->getSize($filename);
+            $mime = $this->multimediaStorage->getMimetype($filename);
+
+            $id = MultimediaId::generate();
+            $multimedia = new Multimedia(
+                $id,
+                $name,
+                $extension,
+                $size,
+                $hash,
+                $mime,
+            );
+
+            $this->repository->save($multimedia);
+            unlink($tmpFile);
         }
+
+        return $id;
     }
 }

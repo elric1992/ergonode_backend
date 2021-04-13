@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -14,7 +14,7 @@ use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\Grid\Renderer\GridRenderer;
 use Ergonode\Grid\RequestGridConfiguration;
 use Ergonode\Product\Infrastructure\Factory\DataSet\DbalProductDataSetFactory;
-use Ergonode\Product\Infrastructure\Grid\ProductGrid;
+use Ergonode\Product\Infrastructure\Grid\ProductGridBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Swagger\Annotations as SWG;
@@ -28,22 +28,22 @@ class ProductGridReadAction
 {
     private DbalProductDataSetFactory $dataSetFactory;
 
-    private ProductGrid $productGrid;
+    private ProductGridBuilder $gridBuilder;
 
     private GridRenderer $gridRenderer;
 
     public function __construct(
         GridRenderer $gridRenderer,
         DbalProductDataSetFactory $dataSetFactory,
-        ProductGrid $productGrid
+        ProductGridBuilder $gridBuilder
     ) {
         $this->dataSetFactory = $dataSetFactory;
-        $this->productGrid = $productGrid;
+        $this->gridBuilder = $gridBuilder;
         $this->gridRenderer = $gridRenderer;
     }
 
     /**
-     * @IsGranted("PRODUCT_READ")
+     * @IsGranted("PRODUCT_GET_GRID")
      *
      * @SWG\Tag(name="Product")
      * @SWG\Parameter(
@@ -92,7 +92,7 @@ class ProductGridReadAction
      *     type="string",
      *     description="Filter"
      * )
-    * @SWG\Parameter(
+     * @SWG\Parameter(
      *     name="view",
      *     in="query",
      *     required=false,
@@ -117,12 +117,10 @@ class ProductGridReadAction
      */
     public function __invoke(Language $language, RequestGridConfiguration $configuration): Response
     {
-        $data = $this->gridRenderer->render(
-            $this->productGrid,
-            $configuration,
-            $this->dataSetFactory->create(),
-            $language
-        );
+        $grid = $this->gridBuilder->build($configuration, $language);
+        $dataSet = $this->dataSetFactory->create();
+
+        $data = $this->gridRenderer->render($grid, $configuration, $dataSet);
 
         return new SuccessResponse($data);
     }

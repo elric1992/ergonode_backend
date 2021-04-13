@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -14,14 +14,10 @@ use Ergonode\Attribute\Domain\ValueObject\AttributeScope;
 use Ergonode\Core\Domain\ValueObject\TranslatableString;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
 use Ergonode\SharedKernel\Domain\Aggregate\UnitId;
-use JMS\Serializer\Annotation as JMS;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeGroupId;
 
 class UpdateUnitAttributeCommand extends AbstractUpdateAttributeCommand
 {
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\UnitId")
-     */
     private UnitId $unitId;
 
     /**

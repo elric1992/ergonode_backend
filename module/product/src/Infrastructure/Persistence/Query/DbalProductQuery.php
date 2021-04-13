@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -47,6 +47,22 @@ class DbalProductQuery implements ProductQueryInterface
 
         if ($result) {
             return new ProductId($result);
+        }
+
+        return null;
+    }
+
+    public function findSkuByProductId(ProductId $id): ?Sku
+    {
+        $qb = $this->getQuery();
+        $qb->select('sku');
+        $result = $qb->where($qb->expr()->eq('id', ':id'))
+            ->setParameter(':id', $id->getValue())
+            ->execute()
+            ->fetch(\PDO::FETCH_COLUMN);
+
+        if ($result) {
+            return new Sku($result);
         }
 
         return null;
@@ -113,6 +129,34 @@ class DbalProductQuery implements ProductQueryInterface
 
         return [];
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOthersIds(array $productIds): array
+    {
+        $query = $this->connection->createQueryBuilder()
+            ->select('id')
+            ->from(self::PRODUCT_TABLE, 'p');
+
+        if ($productIds) {
+            $query->andWhere($query->expr()->notIn('p.id', ':productId'))
+                ->setParameter(':productId', $productIds, Connection::PARAM_STR_ARRAY);
+        }
+
+        $result = $query
+            ->execute()
+            ->fetchAll(\PDO::FETCH_COLUMN);
+
+        //todo add where
+
+        if (false !== $result) {
+            return $result;
+        }
+
+        return [];
+    }
+
 
     /**
      * {@inheritDoc}
@@ -356,6 +400,57 @@ class DbalProductQuery implements ProductQueryInterface
             ->from(self::PRODUCT_TABLE)
             ->execute()
             ->fetch(\PDO::FETCH_COLUMN);
+    }
+
+    /**
+     * @return ProductId[]
+     */
+    public function findAttributeIdsBySku(Sku $sku): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+
+        $result = $qb->select('attribute_id')
+            ->from(self::VALUE_TABLE, 'vt')
+            ->join('vt', self::PRODUCT_TABLE, 'pt', 'pt.id = vt.product_id')
+            ->where($qb->expr()->eq('sku', ':sku'))
+            ->setParameter(':sku', $sku->getValue())
+            ->execute()
+            ->fetchAll(\PDO::FETCH_COLUMN);
+
+        if (false === $result) {
+            $result = [];
+        }
+
+        foreach ($result as &$item) {
+            $item = new ProductId($item);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return AttributeId[]
+     */
+    public function findAttributeIdsByProductId(ProductId $productId): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+
+        $result = $qb->select('attribute_id')
+            ->from(self::VALUE_TABLE, 'vt')
+            ->where($qb->expr()->eq('product_id', ':productId'))
+            ->setParameter(':productId', $productId->getValue())
+            ->execute()
+            ->fetchAll(\PDO::FETCH_COLUMN);
+
+        if (false === $result) {
+            $result = [];
+        }
+
+        foreach ($result as &$item) {
+            $item = new AttributeId($item);
+        }
+
+        return $result;
     }
 
     private function getQuery(): QueryBuilder

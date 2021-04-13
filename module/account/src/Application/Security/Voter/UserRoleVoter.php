@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,17 +12,13 @@ namespace Ergonode\Account\Application\Security\Voter;
 use Ergonode\Account\Domain\Entity\Role;
 use Ergonode\Account\Domain\Entity\User;
 use Ergonode\Account\Domain\Repository\RoleRepositoryInterface;
-use Ergonode\Account\Domain\ValueObject\Privilege;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
+use Ergonode\Account\Domain\ValueObject\PrivilegeEndPoint;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Ergonode\Account\Domain\Query\PrivilegeQueryInterface;
 
-class UserRoleVoter extends Voter implements LoggerAwareInterface
+class UserRoleVoter extends Voter
 {
-    use LoggerAwareTrait;
-
     private RoleRepositoryInterface $repository;
 
     private PrivilegeQueryInterface $query;
@@ -39,9 +35,9 @@ class UserRoleVoter extends Voter implements LoggerAwareInterface
      */
     public function supports($attribute, $subject): bool
     {
-        $privileges = $this->query->getPrivileges();
+        $privileges = $this->query->getPrivilegesEndPoint();
 
-        return in_array($attribute, array_column($privileges, 'code'), true);
+        return in_array($attribute, array_column($privileges, 'name'), true);
     }
 
     /**
@@ -60,16 +56,17 @@ class UserRoleVoter extends Voter implements LoggerAwareInterface
             throw new \RuntimeException(sprintf('Role by id "%s" not found', $user->getRoleId()->getValue()));
         }
 
-        $result = false;
-        $attributePrivilege = new Privilege($attribute);
-        /** @var Privilege $privilege */
-        foreach ($role->getPrivileges() as $privilege) {
+        $privileges = $this->query->getEndpointPrivilegesByPrivileges($role->getPrivileges());
+
+
+        $attributePrivilege = new PrivilegeEndPoint($attribute);
+
+        foreach ($privileges as $privilege) {
             if ($privilege->isEqual($attributePrivilege)) {
-                $result = true;
-                break;
+                return true;
             }
         }
 
-        return $result;
+        return false;
     }
 }

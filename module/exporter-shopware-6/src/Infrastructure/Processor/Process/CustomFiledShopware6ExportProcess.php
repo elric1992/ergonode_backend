@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+/**
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -9,13 +9,12 @@ declare(strict_types=1);
 namespace Ergonode\ExporterShopware6\Infrastructure\Processor\Process;
 
 use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
+use Ergonode\Channel\Domain\ValueObject\ExportLineId;
 use Ergonode\Core\Domain\ValueObject\Language;
-use Ergonode\Exporter\Domain\Entity\Export;
-use Ergonode\Exporter\Domain\Entity\ExportLine;
-use Ergonode\Exporter\Domain\Repository\ExportLineRepositoryInterface;
+use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\CustomFieldRepositoryInterface;
-use Ergonode\ExporterShopware6\Infrastructure\Builder\Shopware6CustomFieldBuilder;
+use Ergonode\ExporterShopware6\Infrastructure\Builder\CustomFieldBuilder;
 use Ergonode\ExporterShopware6\Infrastructure\Client\Shopware6CustomFieldClient;
 use Ergonode\ExporterShopware6\Infrastructure\Client\Shopware6CustomFieldSetClient;
 use Ergonode\ExporterShopware6\Infrastructure\Exception\Shopware6ExporterException;
@@ -26,6 +25,7 @@ use Ergonode\ExporterShopware6\Infrastructure\Model\Basic\Shopware6CustomFieldSe
 use Ergonode\ExporterShopware6\Infrastructure\Model\Shopware6Language;
 use GuzzleHttp\Exception\ClientException;
 use Webmozart\Assert\Assert;
+use Ergonode\Channel\Domain\Repository\ExportRepositoryInterface;
 
 class CustomFiledShopware6ExportProcess
 {
@@ -35,32 +35,35 @@ class CustomFiledShopware6ExportProcess
 
     private Shopware6CustomFieldClient $customFieldClient;
 
-    private Shopware6CustomFieldBuilder $builder;
+    private CustomFieldBuilder $builder;
 
     private Shopware6CustomFieldSetClient $customFieldSetClient;
 
-    private ExportLineRepositoryInterface $exportLineRepository;
+    private ExportRepositoryInterface  $exportRepository;
 
     public function __construct(
         CustomFieldRepositoryInterface $customFieldRepository,
         Shopware6CustomFieldClient $customFieldClient,
-        Shopware6CustomFieldBuilder $builder,
+        CustomFieldBuilder $builder,
         Shopware6CustomFieldSetClient $customFieldSetClient,
-        ExportLineRepositoryInterface $exportLineRepository
+        ExportRepositoryInterface $exportRepository
     ) {
         $this->customFieldRepository = $customFieldRepository;
         $this->customFieldClient = $customFieldClient;
         $this->builder = $builder;
         $this->customFieldSetClient = $customFieldSetClient;
-        $this->exportLineRepository = $exportLineRepository;
+        $this->exportRepository = $exportRepository;
     }
 
     /**
      * @throws \Exception
      */
-    public function process(Export $export, Shopware6Channel $channel, AbstractAttribute $attribute): void
-    {
-        $exportLine = new ExportLine($export->getId(), $attribute->getId());
+    public function process(
+        ExportLineId $lineId,
+        Export $export,
+        Shopware6Channel $channel,
+        AbstractAttribute $attribute
+    ): void {
         $customField = $this->loadCustomField($channel, $attribute);
         try {
             if ($customField) {
@@ -75,13 +78,9 @@ class CustomFiledShopware6ExportProcess
                 $this->customFieldClient->insert($channel, $customField, $attribute);
             }
         } catch (Shopware6ExporterException $exception) {
-            $exportLine->process();
-            $exportLine->addError($exception->getMessage(), $exception->getParameters());
-            $this->exportLineRepository->save($exportLine);
-            throw $exception;
+            $this->exportRepository->addError($export->getId(), $exception->getMessage(), $exception->getParameters());
         }
-        $exportLine->process();
-        $this->exportLineRepository->save($exportLine);
+        $this->exportRepository->processLine($lineId);
     }
 
     private function updateCustomField(

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -32,6 +32,9 @@ final class Configuration implements ConfigurationInterface
                             'Indicates how frequently snapshots of aggregate (every X events) are taken.
                             More frequent snapshots slow persist operations but make the read operations faster.'
                         )
+                    ->end()
+                    ->scalarNode('aggregate_root_cache')
+                        ->info('Cache service id implementing `\Symfony\Component\Cache\Adapter\AdapterInterface`')
                     ->end()
                 ->end()
             ->end();

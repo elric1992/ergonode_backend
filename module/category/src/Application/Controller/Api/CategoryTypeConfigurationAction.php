@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -40,7 +40,7 @@ class CategoryTypeConfigurationAction
     }
 
     /**
-     * @IsGranted("CATEGORY_READ")
+     * @IsGranted("CATEGORY_GET_TYPE_CONFIGURATION")
      *
      * @SWG\Tag(name="Category")
      *

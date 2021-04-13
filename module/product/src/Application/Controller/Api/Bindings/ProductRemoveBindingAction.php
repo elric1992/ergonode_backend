@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -8,9 +8,11 @@ declare(strict_types=1);
 
 namespace Ergonode\Product\Application\Controller\Api\Bindings;
 
+use Ergonode\Api\Application\Exception\ViolationsHttpException;
 use Ergonode\Api\Application\Response\EmptyResponse;
 use Ergonode\Core\Domain\ValueObject\Language;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\Product\Application\Model\Product\Binding\ProductBindFormModel;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Ergonode\Product\Domain\Entity\AbstractAssociatedProduct;
 use Ergonode\Product\Domain\Entity\AbstractProduct;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -19,6 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
 use Ergonode\Product\Domain\Command\Bindings\RemoveProductBindingCommand;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route(
@@ -35,13 +38,17 @@ class ProductRemoveBindingAction
 {
     private CommandBusInterface $commandBus;
 
-    public function __construct(CommandBusInterface $commandBus)
+    private ValidatorInterface $validator;
+
+    public function __construct(CommandBusInterface $commandBus, ValidatorInterface $validator)
     {
         $this->commandBus = $commandBus;
+        $this->validator = $validator;
     }
 
+
     /**
-     * @IsGranted("PRODUCT_UPDATE")
+     * @IsGranted("PRODUCT_DELETE_BINDING")
      *
      * @SWG\Tag(name="Product")
      * @SWG\Parameter(
@@ -72,8 +79,15 @@ class ProductRemoveBindingAction
      */
     public function __invoke(Language $language, AbstractProduct $product, AbstractAttribute $binding): Response
     {
-        $this->commandBus->dispatch(new RemoveProductBindingCommand($product, $binding));
+        $data = new ProductBindFormModel($product);
+        $data->bindId = $binding->getId()->getValue();
+        $violations = $this->validator->validate($data);
 
-        return new EmptyResponse();
+        if ($violations->count() === 0) {
+            $this->commandBus->dispatch(new RemoveProductBindingCommand($product, $binding));
+
+            return new EmptyResponse();
+        }
+        throw new ViolationsHttpException($violations);
     }
 }

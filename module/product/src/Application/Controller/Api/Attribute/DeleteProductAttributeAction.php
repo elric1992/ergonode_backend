@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -16,7 +16,7 @@ use Ergonode\Product\Domain\Entity\AbstractProduct;
 use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\Attribute\Domain\Entity\AbstractAttribute;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Ergonode\Core\Domain\Query\LanguageQueryInterface;
 use Ergonode\Product\Domain\Command\Attribute\RemoveProductAttributeCommand;
 use Ergonode\Api\Application\Response\EmptyResponse;
@@ -44,7 +44,7 @@ class DeleteProductAttributeAction
      *     }
      * )
      *
-     * @IsGranted("PRODUCT_UPDATE")
+     * @IsGranted("PRODUCT_ATTRIBUTE_DELETE")
      * @IsGranted("edit", subject="language")
      *
      * @SWG\Tag(name="Product")

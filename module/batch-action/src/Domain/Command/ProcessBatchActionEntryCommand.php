@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,10 +10,10 @@ namespace Ergonode\BatchAction\Domain\Command;
 
 use Ergonode\BatchAction\Domain\Entity\BatchActionId;
 use Ergonode\SharedKernel\Domain\AggregateId;
-use Ergonode\EventSourcing\Infrastructure\DomainCommandInterface;
+use Ergonode\SharedKernel\Domain\DomainCommandInterface;
 use Ergonode\BatchAction\Domain\ValueObject\BatchActionType;
 
-class ProcessBatchActionEntryCommand implements DomainCommandInterface
+class ProcessBatchActionEntryCommand extends AbstractPayloadCommand implements DomainCommandInterface
 {
     private BatchActionId $id;
 
@@ -21,11 +21,19 @@ class ProcessBatchActionEntryCommand implements DomainCommandInterface
 
     private AggregateId $resourceId;
 
-    public function __construct(BatchActionId $id, BatchActionType $type, AggregateId $resourceId)
-    {
+    /**
+     * @param mixed $payload
+     */
+    public function __construct(
+        BatchActionId $id,
+        BatchActionType $type,
+        AggregateId $resourceId,
+        $payload = null
+    ) {
         $this->id = $id;
         $this->type = $type;
         $this->resourceId = $resourceId;
+        parent::__construct($payload);
     }
 
     public function getId(): BatchActionId

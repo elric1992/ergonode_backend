@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -21,7 +21,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 
 /**
  * @Route("/trees", methods={"POST"})
@@ -39,7 +39,7 @@ class CategoryTreeCreateAction
     }
 
     /**
-     * @IsGranted("CATEGORY_TREE_CREATE")
+     * @IsGranted("CATEGORY_POST_TREE")
      *
      * @SWG\Tag(name="Tree")
      * @SWG\Parameter(

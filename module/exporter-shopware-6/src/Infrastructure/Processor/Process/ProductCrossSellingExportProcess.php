@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+/**
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -8,10 +8,9 @@ declare(strict_types=1);
 
 namespace Ergonode\ExporterShopware6\Infrastructure\Processor\Process;
 
+use Ergonode\Channel\Domain\ValueObject\ExportLineId;
 use Ergonode\Core\Domain\ValueObject\Language;
-use Ergonode\Exporter\Domain\Entity\Export;
-use Ergonode\Exporter\Domain\Entity\ExportLine;
-use Ergonode\Exporter\Domain\Repository\ExportLineRepositoryInterface;
+use Ergonode\Channel\Domain\Entity\Export;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Domain\Repository\LanguageRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Repository\ProductCrossSellingRepositoryInterface;
@@ -27,6 +26,7 @@ use Ergonode\SharedKernel\Domain\Aggregate\ProductCollectionId;
 use Ergonode\SharedKernel\Domain\Aggregate\ProductId;
 use GuzzleHttp\Exception\ClientException;
 use Webmozart\Assert\Assert;
+use Ergonode\Channel\Domain\Repository\ExportRepositoryInterface;
 
 class ProductCrossSellingExportProcess
 {
@@ -38,7 +38,7 @@ class ProductCrossSellingExportProcess
 
     private LanguageRepositoryInterface $languageRepository;
 
-    private ExportLineRepositoryInterface $exportLineRepository;
+    private ExportRepositoryInterface $exportRepository;
 
     private ProductCrossSellingRemoveProductExportProcess $productCrossSellingRemoveExportProcess;
 
@@ -47,39 +47,39 @@ class ProductCrossSellingExportProcess
         ProductCrossSellingClient $productCrossSellingClient,
         ProductCrossSellingRepositoryInterface $productCrossSellingRepository,
         LanguageRepositoryInterface $languageRepository,
-        ExportLineRepositoryInterface $exportLineRepository,
+        ExportRepositoryInterface $exportRepository,
         ProductCrossSellingRemoveProductExportProcess $productCrossSellingRemoveExportProcess
     ) {
         $this->builder = $builder;
         $this->productCrossSellingClient = $productCrossSellingClient;
         $this->productCrossSellingRepository = $productCrossSellingRepository;
         $this->languageRepository = $languageRepository;
-        $this->exportLineRepository = $exportLineRepository;
+        $this->exportRepository = $exportRepository;
         $this->productCrossSellingRemoveExportProcess = $productCrossSellingRemoveExportProcess;
     }
 
-    public function process(Export $export, Shopware6Channel $channel, ProductCollection $productCollection): void
-    {
+    public function process(
+        ExportLineId $lineId,
+        Export $export,
+        Shopware6Channel $channel,
+        ProductCollection $productCollection
+    ): void {
         $this->productCrossSellingRemoveExportProcess->process($export, $channel, $productCollection);
-
-        $exportLine = new ExportLine($export->getId(), $productCollection->getId());
 
         foreach ($productCollection->getElements() as $productCollectionElement) {
             if ($productCollectionElement->isVisible()) {
-                $this->processElement($export, $channel, $productCollection, $productCollectionElement, $exportLine);
+                $this->processElement($export, $channel, $productCollection, $productCollectionElement);
             }
         }
 
-        $exportLine->process();
-        $this->exportLineRepository->save($exportLine);
+        $this->exportRepository->processLine($lineId);
     }
 
     public function processElement(
         Export $export,
         Shopware6Channel $channel,
         ProductCollection $productCollection,
-        ProductCollectionElement $collectionElement,
-        ExportLine $exportLine
+        ProductCollectionElement $collectionElement
     ): void {
         $productCrossSelling = $this->loadProductCrossSelling(
             $channel,
@@ -125,9 +125,7 @@ class ProductCrossSellingExportProcess
                 }
             }
         } catch (Shopware6ExporterException $exception) {
-            $exportLine->process();
-            $exportLine->addError($exception->getMessage(), $exception->getParameters());
-            $this->exportLineRepository->save($exportLine);
+            $this->exportRepository->addError($export->getId(), $exception->getMessage(), $exception->getParameters());
         }
     }
 

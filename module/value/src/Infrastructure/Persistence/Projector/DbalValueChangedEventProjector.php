@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace Ergonode\Value\Infrastructure\Persistence\Projector;
 
 use Doctrine\DBAL\Connection;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
 use Ergonode\Value\Domain\Event\ValueChangedEvent;
-use JMS\Serializer\SerializerInterface;
 use Ramsey\Uuid\Uuid;
 
 class DbalValueChangedEventProjector
@@ -39,8 +39,8 @@ class DbalValueChangedEventProjector
         $this->connection->transactional(function () use ($event): void {
             $attributeId = AttributeId::fromKey($event->getAttributeCode()->getValue());
             $type = get_class($event->getTo());
-            $newValue = $this->serializer->serialize($event->getTo(), 'json');
-            $oldValue = $this->serializer->serialize($event->getTo(), 'json');
+            $newValue = $this->serializer->serialize($event->getTo());
+            $oldValue = $this->serializer->serialize($event->getTo());
 
             $newValueId = Uuid::uuid5(self::NAMESPACE, $newValue);
             $oldValueId = Uuid::uuid5(self::NAMESPACE, $oldValue);

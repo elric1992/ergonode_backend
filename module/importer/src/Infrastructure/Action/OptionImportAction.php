@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,13 +11,14 @@ namespace Ergonode\Importer\Infrastructure\Action;
 
 use Ergonode\Attribute\Domain\Query\AttributeQueryInterface;
 use Ergonode\Attribute\Domain\ValueObject\AttributeCode;
-use Webmozart\Assert\Assert;
+use Ergonode\Importer\Infrastructure\Exception\ImportException;
 use Ergonode\Attribute\Domain\Query\OptionQueryInterface;
 use Ergonode\Attribute\Domain\Command\Option\CreateOptionCommand;
 use Ergonode\Attribute\Domain\ValueObject\OptionKey;
 use Ergonode\Attribute\Domain\Command\Option\UpdateOptionCommand;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Ergonode\Core\Domain\ValueObject\TranslatableString;
+use Ergonode\SharedKernel\Domain\AggregateId;
 
 class OptionImportAction
 {
@@ -40,10 +41,12 @@ class OptionImportAction
     /**
      * @throws \Exception
      */
-    public function action(AttributeCode $code, OptionKey $optionKey, TranslatableString $label): void
+    public function action(AttributeCode $code, OptionKey $optionKey, TranslatableString $label): AggregateId
     {
         $attributeId = $this->attributeQuery->findAttributeIdByCode($code);
-        Assert::notNull($attributeId);
+        if (null === $attributeId) {
+            throw new ImportException('Missing {code} attribute.', ['{code}' => $code]);
+        }
         $optionId = $this->optionQuery->findIdByAttributeIdAndCode($attributeId, $optionKey);
 
         if (!$optionId) {
@@ -52,6 +55,7 @@ class OptionImportAction
                 $optionKey,
                 $label
             );
+            $optionId = $command->getId();
         } else {
             $command = new UpdateOptionCommand(
                 $optionId,
@@ -62,5 +66,7 @@ class OptionImportAction
         }
 
         $this->commandBus->dispatch($command, true);
+
+        return $optionId;
     }
 }

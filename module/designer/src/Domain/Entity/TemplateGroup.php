@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,18 +12,11 @@ namespace Ergonode\Designer\Domain\Entity;
 use Ergonode\Designer\Domain\Event\Group\TemplateGroupCreatedEvent;
 use Ergonode\EventSourcing\Domain\AbstractAggregateRoot;
 use Ergonode\SharedKernel\Domain\Aggregate\TemplateGroupId;
-use JMS\Serializer\Annotation as JMS;
 
 class TemplateGroup extends AbstractAggregateRoot
 {
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\TemplateGroupId")
-     */
     private TemplateGroupId $id;
 
-    /**
-     * @JMS\Type("string")
-     */
     private string $name;
 
     /**

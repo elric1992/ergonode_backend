@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -8,28 +8,20 @@ declare(strict_types=1);
 
 namespace Ergonode\ImporterErgonode1\Infrastructure\Model;
 
-class AttributeModel
+class AttributeModel extends AbstractModel
 {
-    private string $id;
     private string $code;
     private string $type;
     private string $scope;
     private array $name = [];
     private array $hint = [];
     private array $placeholder = [];
-    private array $parameters = [];
 
-    public function __construct(string $id, string $code, string $type, string $scope)
+    public function __construct(string $code, string $type, string $scope)
     {
-        $this->id = $id;
         $this->code = $code;
         $this->type = $type;
         $this->scope = $scope;
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
     }
 
     public function getCode(): string
@@ -75,15 +67,5 @@ class AttributeModel
     public function addName(string $language, string $value): void
     {
         $this->name[$language] = $value;
-    }
-
-    public function getParameters(): array
-    {
-        return $this->parameters;
-    }
-
-    public function addParameter(string $name, string $value): void
-    {
-        $this->parameters[$name] = $value;
     }
 }

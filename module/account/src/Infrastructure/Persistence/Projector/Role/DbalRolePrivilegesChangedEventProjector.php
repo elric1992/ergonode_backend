@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,7 +12,7 @@ namespace Ergonode\Account\Infrastructure\Persistence\Projector\Role;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Ergonode\Account\Domain\Event\Role\RolePrivilegesChangedEvent;
-use JMS\Serializer\SerializerInterface;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 
 class DbalRolePrivilegesChangedEventProjector
 {
@@ -36,7 +36,7 @@ class DbalRolePrivilegesChangedEventProjector
         $this->connection->update(
             self::TABLE,
             [
-                'privileges' => $this->serializer->serialize($event->getTo(), 'json'),
+                'privileges' => $this->serializer->serialize($event->getTo()),
             ],
             [
                 'id' => $event->getAggregateId()->getValue(),

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -43,6 +43,11 @@ class CacheProductQueryDecorator implements ProductQueryInterface
         return $this->cache[$key];
     }
 
+    public function findSkuByProductId(ProductId $id): ?Sku
+    {
+        return $this->query->findSkuByProductId($id);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -73,6 +78,14 @@ class CacheProductQueryDecorator implements ProductQueryInterface
     public function getAllSkus(): array
     {
         return $this->query->getAllSkus();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOthersIds(array $productIds): array
+    {
+        return $this->query->getOthersIds($productIds);
     }
 
     /**
@@ -154,5 +167,15 @@ class CacheProductQueryDecorator implements ProductQueryInterface
     public function getCount(): int
     {
         return $this->query->getCount();
+    }
+
+    public function findAttributeIdsBySku(Sku $sku): array
+    {
+        return $this->query->findAttributeIdsBySku($sku);
+    }
+
+    public function findAttributeIdsByProductId(ProductId $productId): array
+    {
+        return $this->query->findAttributeIdsByProductId($productId);
     }
 }

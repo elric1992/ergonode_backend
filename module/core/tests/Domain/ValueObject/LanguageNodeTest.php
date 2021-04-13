@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -30,15 +30,6 @@ class LanguageNodeTest extends TestCase
     {
         $node = new LanguageNode($this->languageId);
         self::assertEquals($this->languageId, $node->getLanguageId());
-    }
-
-    public function testSettingParent(): void
-    {
-        /** @var LanguageNode|MockObject $parent */
-        $parent = $this->createMock(LanguageNode::class);
-        $node = new LanguageNode($this->languageId);
-        $node->setParent($parent);
-        self::assertEquals($parent, $node->getParent());
     }
 
     public function testAddChildren(): void

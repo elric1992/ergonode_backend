@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -15,12 +15,12 @@ use Ergonode\SharedKernel\Domain\Aggregate\ProductId;
 
 /**
  * @ProductAssert\ProductChild
+ * @ProductAssert\ProductInvalidChild(groups={"VARIABLE-PRODUCT"})
  */
 class ProductChildFormModel
 {
     /**
      * @ProductAssert\ProductType(type={"VARIABLE-PRODUCT", "GROUPING-PRODUCT"})
-     * @ProductAssert\ProductNoBindings(groups={"VARIABLE-PRODUCT"})
      */
     private ProductId $parentId;
 

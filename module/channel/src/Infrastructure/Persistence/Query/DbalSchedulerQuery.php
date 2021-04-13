@@ -2,7 +2,7 @@
 
 /**
  * Copyright © Ergonode Sp. z o.o. All rights reserved.
- * See license.txt for license details.
+ * See LICENSE.txt for license details.
  */
 
 declare(strict_types=1);
@@ -32,7 +32,9 @@ class DbalSchedulerQuery implements SchedulerQueryInterface
     {
         $sub = $this->connection->createQueryBuilder();
         $sub->select('id, active, start, last, current_timestamp AS actual')
-            ->addSelect('current_timestamp - concat(hour, \':\', minute)::TIME AS expected')
+            ->addSelect(
+                'current_timestamp - INTERVAL \'1 hour \' * "hour" - INTERVAL \'1 minute \' * "minute" AS expected'
+            )
             ->from(self::TABLE);
 
         $qb = $result = $this->connection->createQueryBuilder();

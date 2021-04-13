@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace Ergonode\Product\Application\Controller\Api\Attribute;
 
 use Ergonode\Api\Application\Exception\FormValidationHttpException;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Ergonode\Product\Application\Factory\Command\RemoveProductAttributeCommandFactory;
 use Ergonode\Product\Application\Form\Product\Attribute\Delete\DeleteProductAttributeCollectionForm;
 use Ergonode\Product\Application\Model\Product\Attribute\Delete\DeleteProductAttributeCollectionFormModel;
@@ -50,7 +50,7 @@ class DeleteProductsAttributesAction
     }
 
     /**
-     * @IsGranted("PRODUCT_UPDATE")
+     * @IsGranted("PRODUCT_ATTRIBUTES_DELETE")
      *
      * @SWG\Tag(name="Product")
      *

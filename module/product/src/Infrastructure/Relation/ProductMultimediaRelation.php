@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -48,7 +48,7 @@ class ProductMultimediaRelation implements MultimediaRelationInterface
         $result = [];
         foreach ($relations as $id => $name) {
             $product['name'] = $name;
-            if ($this->security->isGranted('PRODUCT_READ')) {
+            if ($this->security->isGranted('PRODUCT_GET')) {
                 $product['_link'] = [
                     'method' => Request::METHOD_GET,
                     'href' => $this->getUrl('ergonode_product_read', ['language' => $language, 'product' => $id]),

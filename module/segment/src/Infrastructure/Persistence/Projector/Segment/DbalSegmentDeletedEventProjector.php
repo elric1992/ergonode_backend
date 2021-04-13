@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Ergonode\Segment\Infrastructure\Persistence\Projector\Segment;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
 use Ergonode\Segment\Domain\Event\SegmentDeletedEvent;
 
 class DbalSegmentDeletedEventProjector
@@ -25,9 +24,6 @@ class DbalSegmentDeletedEventProjector
         $this->connection = $connection;
     }
 
-    /**
-     * @throws DBALException
-     */
     public function __invoke(SegmentDeletedEvent $event): void
     {
         $this->connection->delete(

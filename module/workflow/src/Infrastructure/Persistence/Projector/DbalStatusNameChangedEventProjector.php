@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
- * See license.txt for license details.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * See LICENSE.txt for license details.
  */
 
 declare(strict_types=1);
@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace Ergonode\Workflow\Infrastructure\Persistence\Projector;
 
 use Doctrine\DBAL\Connection;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 use Ergonode\Workflow\Domain\Event\Status\StatusNameChangedEvent;
-use JMS\Serializer\SerializerInterface;
 
 class DbalStatusNameChangedEventProjector
 {
@@ -35,7 +35,7 @@ class DbalStatusNameChangedEventProjector
         $this->connection->update(
             self::TABLE,
             [
-                'name' => $this->serializer->serialize($event->getTo()->getTranslations(), 'json'),
+                'name' => $this->serializer->serialize($event->getTo()->getTranslations()),
             ],
             [
                 'id' => $event->getAggregateId()->getValue(),

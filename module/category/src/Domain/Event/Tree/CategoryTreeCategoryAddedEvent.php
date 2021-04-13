@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,24 +12,14 @@ namespace Ergonode\Category\Domain\Event\Tree;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId;
 
-use Ergonode\EventSourcing\Infrastructure\DomainEventInterface;
-use JMS\Serializer\Annotation as JMS;
+use Ergonode\SharedKernel\Domain\AggregateEventInterface;
 
-class CategoryTreeCategoryAddedEvent implements DomainEventInterface
+class CategoryTreeCategoryAddedEvent implements AggregateEventInterface
 {
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\CategoryTreeId")
-     */
     private CategoryTreeId $id;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\CategoryId")
-     */
     private CategoryId $categoryId;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\CategoryId")
-     */
     private ?CategoryId $parentId;
 
     public function __construct(CategoryTreeId $id, CategoryId $categoryId, ?CategoryId $parentId = null)

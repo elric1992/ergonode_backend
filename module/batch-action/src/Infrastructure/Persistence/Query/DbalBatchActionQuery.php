@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -20,6 +20,10 @@ use Ergonode\BatchAction\Domain\Model\BatchActionEntryModel;
 
 class DbalBatchActionQuery implements BatchActionQueryInterface
 {
+    private const TABLE_BATCH_ACTION = 'batch_action';
+
+    private const PROFILE_RESULT = 10;
+
     private Connection $connection;
 
     private TranslatorInterface $translator;
@@ -41,12 +45,11 @@ class DbalBatchActionQuery implements BatchActionQueryInterface
             AND success IS NOT NULL) AS processed')
             ->addSelect('(SELECT max(processed_at) FROM batch_action_entry WHERE batch_action_id = id) 
             AS last_processed_at')
-            ->from('batch_action')
+            ->from(self::TABLE_BATCH_ACTION)
             ->where($qb->expr()->eq('id', ':id'))
             ->setParameter(':id', $id->getValue())
             ->execute()
             ->fetch();
-
 
         $model = new BatchActionInformationModel(
             new BatchActionId($record['id']),
@@ -54,7 +57,9 @@ class DbalBatchActionQuery implements BatchActionQueryInterface
             $record['all'],
             $record['processed'],
             new \DateTime($record['created_at']),
-            $record['all'] === $record['processed'] ? new \DateTime($record['last_processed_at']) : null
+            $record['all'] === $record['processed'] ?
+                new \DateTime($record['last_processed_at'] ??
+                $record['created_at']) : null
         );
 
         foreach ($this->getEntries($id, $language) as $entry) {
@@ -62,6 +67,51 @@ class DbalBatchActionQuery implements BatchActionQueryInterface
         }
 
         return $model;
+    }
+
+    public function getProfileInfo(): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+
+        return $qb->select('id')
+            ->addSelect('(select (case
+                                            when (select count(*)
+                                                  from batch_action_entry
+                                                  where batch_action_id = ba.id 
+                                                    and success is null ) = 0 then \'ENDED\'
+                                            else \'PRECESSED\' end) as status)')
+            ->addSelect('created_at as started_at')
+            ->addSelect('(select (case
+                                when (select count(*)
+                                    from batch_action_entry
+                                    where batch_action_id = ba.id 
+                                        and success is null ) = 0 then (
+                                            select MAX(processed_at)
+                                                from batch_action_entry
+                                                where batch_action_id = ba.id
+                                        ) end) AS ended_at)')
+            ->addSelect('type as name')
+            ->addSelect('(select count(*)
+                                from batch_action_entry
+                                where batch_action_id = ba.id) as items')
+            ->addSelect('(select count(*)
+                                from batch_action_entry
+                                where batch_action_id = ba.id
+                                  and success is not null) as processed')
+            ->addSelect('(select count(*)
+                                 from batch_action_entry
+                                 where batch_action_id = ba.id
+                                   and success = true) as succeeded')
+            ->addSelect('(select count(*)
+                                 from batch_action_entry
+                                 where batch_action_id = ba.id
+                                   and success = false) as errors')
+            ->orderBy('started_at', 'DESC')
+            ->from(self::TABLE_BATCH_ACTION, 'ba')
+            ->where('exists(select id from batch_action_entry where batch_action_id=ba.id)')
+            ->setMaxResults(self::PROFILE_RESULT)
+            ->execute()
+            ->fetchAll();
     }
 
     private function getEntries(BatchActionId $id, Language $language): array

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,51 +10,30 @@ declare(strict_types=1);
 namespace Ergonode\Designer\Domain\Command;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ergonode\Designer\Domain\Entity\TemplateElement;
+use Ergonode\Designer\Domain\Entity\TemplateElementInterface;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
 use Ergonode\SharedKernel\Domain\Aggregate\MultimediaId;
 use Ergonode\SharedKernel\Domain\Aggregate\TemplateId;
-use JMS\Serializer\Annotation as JMS;
 use Webmozart\Assert\Assert;
 
 class CreateTemplateCommand implements TemplateCommandInterface
 {
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\TemplateId")
-     */
     private TemplateId $templateId;
 
-    /**
-     * @JMS\Type("string")
-     */
     private string $name;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\MultimediaId")
-     */
     private ?MultimediaId $imageId;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\AttributeId")
-     */
     private ?AttributeId $defaultLabel;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\AttributeId")
-     */
     private ?AttributeId $defaultImage;
 
     /**
-     * @var ArrayCollection|TemplateElement[]
-     *
-     * @JMS\Type("ArrayCollection<Ergonode\Designer\Domain\Entity\TemplateElement>")
+     * @var ArrayCollection|TemplateElementInterface[]
      */
     private ArrayCollection $elements;
 
     /**
-     * CreateTemplateCommand constructor.
-     *
-     *
      * @throws \Exception
      */
     public function __construct(
@@ -66,7 +45,7 @@ class CreateTemplateCommand implements TemplateCommandInterface
     ) {
         Assert::allIsInstanceOf(
             $elements->toArray(),
-            TemplateElement::class,
+            TemplateElementInterface::class,
             'Template elements should by %2$s class. Got: %s'
         );
 
@@ -104,7 +83,7 @@ class CreateTemplateCommand implements TemplateCommandInterface
     }
 
     /**
-     * @return ArrayCollection|TemplateElement[]
+     * @return ArrayCollection|TemplateElementInterface[]
      */
     public function getElements(): ArrayCollection
     {

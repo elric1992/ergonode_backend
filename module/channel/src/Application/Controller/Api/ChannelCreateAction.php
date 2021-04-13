@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,7 +12,7 @@ namespace Ergonode\Channel\Application\Controller\Api;
 use Ergonode\Api\Application\Exception\FormValidationHttpException;
 use Ergonode\Api\Application\Response\CreatedResponse;
 use Ergonode\Channel\Application\Form\ChannelTypeForm;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -50,7 +50,7 @@ class ChannelCreateAction
     }
 
     /**
-     * @IsGranted("CHANNEL_CREATE")
+     * @IsGranted("CHANNEL_POST")
      *
      * @SWG\Tag(name="Channel")
      * @SWG\Parameter(

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -26,7 +26,7 @@ use Ergonode\Workflow\Domain\Entity\AbstractWorkflow;
 class WorkflowReadAction
 {
     /**
-     * @IsGranted("WORKFLOW_READ")
+     * @IsGranted("WORKFLOW_GET")
      *
      * @SWG\Tag(name="Workflow")
      * @SWG\Parameter(

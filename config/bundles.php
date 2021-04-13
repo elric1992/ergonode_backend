@@ -1,7 +1,7 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
- * See license.txt for license details.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
+ * See LICENSE.txt for license details.
  */
 
 declare(strict_types=1);
@@ -24,7 +24,6 @@ return [
     Ergonode\ExporterFile\ErgonodeExporterFileBundle::class => ['all' => true],
     Ergonode\ExporterMagento2\ErgonodeExporterMagento2Bundle::class => ['all' => true],
     Ergonode\ExporterShopware6\ErgonodeExporterShopware6Bundle::class => ['all' => true],
-    Ergonode\Exporter\ErgonodeExporterBundle::class => ['all' => true],
     Ergonode\Fixture\ErgonodeFixtureBundle::class => ['dev' => true, 'test' => true],
     Ergonode\Generator\ErgonodeGeneratorBundle::class => ['dev' => true],
     Ergonode\Grid\ErgonodeGridBundle::class => ['all' => true],
@@ -34,6 +33,7 @@ return [
     Ergonode\Mailer\ErgonodeMailerBundle::class => ['all' => true],
     Ergonode\Migration\ErgonodeMigrationBundle::class => ['all' => true],
     Ergonode\Multimedia\ErgonodeMultimediaBundle::class => ['all' => true],
+    Ergonode\NewRelic\ErgonodeNewRelicBundle::class => ['prod' => true],
     Ergonode\Notification\ErgonodeNotificationBundle::class => ['all' => true],
     Ergonode\ProductCollection\ErgonodeProductCollectionBundle::class => ['all' => true],
     Ergonode\Product\ErgonodeProductBundle::class => ['all' => true],
@@ -45,7 +45,6 @@ return [
     Ergonode\Workflow\ErgonodeWorkflowBundle::class => ['all' => true],
     FriendsOfBehat\SymfonyExtension\Bundle\FriendsOfBehatSymfonyExtensionBundle::class => ['test' => true],
     Gesdinet\JWTRefreshTokenBundle\GesdinetJWTRefreshTokenBundle::class => ['all' => true],
-    JMS\SerializerBundle\JMSSerializerBundle::class => ['all' => true],
     League\FlysystemBundle\FlysystemBundle::class => ['all' => true],
     Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle::class => ['all' => true],
     Limenius\LiformBundle\LimeniusLiformBundle::class => ['all' => true],
@@ -59,6 +58,5 @@ return [
     Symfony\Bundle\SecurityBundle\SecurityBundle::class => ['all' => true],
     Symfony\Bundle\TwigBundle\TwigBundle::class => ['all' => true],
     Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
-    Symfony\Bundle\WebServerBundle\WebServerBundle::class => ['dev' => true, 'test' => true],
     Vich\UploaderBundle\VichUploaderBundle::class => ['all' => true],
 ];

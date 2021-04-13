@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -9,7 +9,8 @@ declare(strict_types=1);
 
 namespace Ergonode\EventSourcing\Infrastructure;
 
-abstract class AbstractDeleteEvent implements DomainEventInterface
-{
+use Ergonode\SharedKernel\Domain\AggregateEventInterface;
 
+abstract class AbstractDeleteEvent implements AggregateEventInterface
+{
 }

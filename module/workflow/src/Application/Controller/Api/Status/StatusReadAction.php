@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -27,7 +27,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class StatusReadAction
 {
     /**
-     * @IsGranted("WORKFLOW_READ")
+     * @IsGranted("WORKFLOW_GET_STATUS")
      *
      * @SWG\Tag(name="Workflow")
      * @SWG\Parameter(

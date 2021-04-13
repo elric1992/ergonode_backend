@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,9 +11,9 @@ namespace Ergonode\EventSourcing\Infrastructure\Snapshot;
 use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Doctrine\DBAL\Types\Types;
 use Ergonode\EventSourcing\Domain\AbstractAggregateRoot;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 use Ergonode\SharedKernel\Domain\AggregateId;
 use Doctrine\DBAL\Connection;
-use JMS\Serializer\SerializerInterface;
 use Ramsey\Uuid\Uuid;
 use Doctrine\DBAL\DBALException;
 use Ergonode\EventSourcing\Domain\AbstractEntity;
@@ -45,7 +45,7 @@ class DbalAggregateSnapshot implements AggregateSnapshotInterface
     public function load(AggregateId $id, string $class): ?AbstractAggregateRoot
     {
         $qb = $this->connection->createQueryBuilder();
-        $record = $qb->select('*')
+        $record = $qb->select('sequence, payload')
             ->from(self::TABLE)
             ->where($qb->expr()->eq('aggregate_id', ':aggregateId'))
             ->setParameter(':aggregateId', $id->getValue())
@@ -56,7 +56,7 @@ class DbalAggregateSnapshot implements AggregateSnapshotInterface
 
         if ($record) {
             /** @var AbstractAggregateRoot $aggregate */
-            $aggregate = $this->serializer->deserialize($record['payload'], $class, 'json');
+            $aggregate = $this->serializer->deserialize($record['payload'], $class);
 
             $reflection = new \ReflectionClass($aggregate);
             $property = $reflection->getProperty('sequence');
@@ -83,7 +83,7 @@ class DbalAggregateSnapshot implements AggregateSnapshotInterface
     public function save(AbstractAggregateRoot $aggregate): void
     {
         if (0 === ($aggregate->getSequence() % $this->snapshotEvents)) {
-            $payload = $this->serializer->serialize($aggregate, 'json');
+            $payload = $this->serializer->serialize($aggregate);
 
             $this->connection->insert(
                 self::TABLE,

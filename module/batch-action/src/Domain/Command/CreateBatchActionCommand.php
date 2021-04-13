@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -9,33 +9,31 @@ declare(strict_types=1);
 namespace Ergonode\BatchAction\Domain\Command;
 
 use Ergonode\BatchAction\Domain\Entity\BatchActionId;
+use Ergonode\BatchAction\Domain\ValueObject\BatchActionFilterInterface;
 use Ergonode\BatchAction\Domain\ValueObject\BatchActionType;
-use Ergonode\SharedKernel\Domain\AggregateId;
-use Webmozart\Assert\Assert;
-use Ergonode\EventSourcing\Infrastructure\DomainCommandInterface;
+use Ergonode\SharedKernel\Domain\DomainCommandInterface;
 
-class CreateBatchActionCommand implements DomainCommandInterface
+class CreateBatchActionCommand extends AbstractPayloadCommand implements DomainCommandInterface
 {
     private BatchActionId $id;
 
     private BatchActionType $type;
 
-    /**
-     * @var AggregateId[]
-     */
-    private array $ids;
+    private BatchActionFilterInterface $filter;
 
     /**
-     * @param AggregateId[] $ids
+     * @param mixed $payload
      */
-    public function __construct(BatchActionId $id, BatchActionType $type, array $ids)
-    {
-        Assert::allIsInstanceOf($ids, AggregateId::class);
-        Assert::minCount($ids, 1);
-
+    public function __construct(
+        BatchActionId $id,
+        BatchActionType $type,
+        BatchActionFilterInterface $filter,
+        $payload = null
+    ) {
         $this->id = $id;
         $this->type = $type;
-        $this->ids = $ids;
+        $this->filter = $filter;
+        parent::__construct($payload);
     }
 
     public function getId(): BatchActionId
@@ -48,11 +46,8 @@ class CreateBatchActionCommand implements DomainCommandInterface
         return $this->type;
     }
 
-    /**
-     * @return AggregateId[]
-     */
-    public function getIds(): array
+    public function getFilter(): BatchActionFilterInterface
     {
-        return $this->ids;
+        return $this->filter;
     }
 }

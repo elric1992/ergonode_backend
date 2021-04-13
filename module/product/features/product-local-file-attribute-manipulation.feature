@@ -5,41 +5,18 @@ Feature: Product edit and inheritance value for product product with file attrib
     And I add "Content-Type" header equal to "application/json"
     And I add "Accept" header equal to "application/json"
 
-  Scenario: Get language en
-    When I send a GET request to "/api/v1/en_GB/languages/en_GB"
+  Scenario Outline: Get language <language>
+    When I send a GET request to "/api/v1/en_GB/languages/<language>"
     Then the response status code should be 200
-    And store response param "id" as "language_id_en"
-
-  Scenario: Get language pl
-    When I send a GET request to "/api/v1/en_GB/languages/pl_PL"
-    Then the response status code should be 200
-    And store response param "id" as "language_id_pl"
-
-  Scenario: Get language fr
-    When I send a GET request to "/api/v1/en_GB/languages/fr_FR"
-    Then the response status code should be 200
-    And store response param "id" as "language_id_fr"
-
-  Scenario: Get language de
-    When I send a GET request to "/api/v1/en_GB/languages/de_DE"
-    Then the response status code should be 200
-    And store response param "id" as "language_id_de"
-
-  Scenario: Activate languages
-    When I send a PUT request to "api/v1/en_GB/languages" with body:
-      """
-      {
-        "collection": [
-          "en_GB","pl_PL", "fr_FR", "de_DE"
-        ]
-      }
-      """
-    Then the response status code should be 204
+    And store response param "id" as "<id>"
+    Examples:
+      | language | id             |
+      | en_GB    | language_id_en |
+      | pl_PL    | language_id_pl |
+      | fr_FR    | language_id_fr |
+      | de_DE    | language_id_de |
 
   Scenario: Update Tree
-    Given I am Authenticated as "test@ergonode.com"
-    And I add "Content-Type" header equal to "application/json"
-    And I add "Accept" header equal to "application/json"
     When I send a PUT request to "/api/v1/en_GB/language/tree" with body:
       """
         {
@@ -170,8 +147,7 @@ Feature: Product edit and inheritance value for product product with file attrib
           ]
         }
       """
-    Then the response status code should be 500
-    And the JSON node "exception.current.message" should contain "Expected an array. Got: string"
+    Then the response status code should be 200
 
   Scenario: Edit product file value in "en_GB" language (batch endpoint) (value not uuid)
     When I send a PATCH request to "/api/v1/en_GB/products/attributes" with body:

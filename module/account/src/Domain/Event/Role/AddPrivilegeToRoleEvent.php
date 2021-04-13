@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,19 +11,12 @@ namespace Ergonode\Account\Domain\Event\Role;
 
 use Ergonode\SharedKernel\Domain\Aggregate\RoleId;
 use Ergonode\Account\Domain\ValueObject\Privilege;
-use Ergonode\EventSourcing\Infrastructure\DomainEventInterface;
-use JMS\Serializer\Annotation as JMS;
+use Ergonode\SharedKernel\Domain\AggregateEventInterface;
 
-class AddPrivilegeToRoleEvent implements DomainEventInterface
+class AddPrivilegeToRoleEvent implements AggregateEventInterface
 {
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\RoleId")
-     */
     private RoleId $id;
 
-    /**
-     * @JMS\Type("Ergonode\Account\Domain\ValueObject\Privilege")
-     */
     private Privilege $privilege;
 
     public function __construct(RoleId $id, Privilege $privilege)

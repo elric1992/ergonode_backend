@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -20,6 +20,7 @@ use Ergonode\SharedKernel\Domain\Aggregate\AttributeGroupId;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
 use Ergonode\SharedKernel\Domain\Aggregate\MultimediaId;
 use Ergonode\SharedKernel\Domain\Aggregate\UnitId;
+use Ergonode\Attribute\Domain\ValueObject\AttributeScope;
 
 class CacheAttributeQueryDecorator implements AttributeQueryInterface
 {
@@ -65,6 +66,11 @@ class CacheAttributeQueryDecorator implements AttributeQueryInterface
         return $this->attributeQuery->findAttributeIdByCode($code);
     }
 
+    public function findAttributeScope(AttributeId $id): ?AttributeScope
+    {
+        return $this->attributeQuery->findAttributeScope($id);
+    }
+
     /**
      * @return array|null
      */
@@ -91,9 +97,9 @@ class CacheAttributeQueryDecorator implements AttributeQueryInterface
      *
      * @return array
      */
-    public function getAttributeCodes(array $types = []): array
+    public function getAttributeCodes(array $types = [], bool $includeSystem = true): array
     {
-        return $this->attributeQuery->getAttributeCodes($types);
+        return $this->attributeQuery->getAttributeCodes($types, $includeSystem);
     }
 
     public function findAttributeOption(AttributeId $id, OptionKey $key): ?OptionInterface
@@ -133,6 +139,16 @@ class CacheAttributeQueryDecorator implements AttributeQueryInterface
     public function getMultimediaRelation(MultimediaId $id): array
     {
         return $this->attributeQuery->getMultimediaRelation($id);
+    }
+
+    public function findAttributeCodeById(AttributeId $id): ?AttributeCode
+    {
+        $key = sprintf('id_%s', $id->getValue());
+        if (!array_key_exists($key, $this->cache)) {
+            $this->cache[$key] = $this->attributeQuery->findAttributeCodeById($id);
+        }
+
+        return $this->cache[$key];
     }
 
     /**

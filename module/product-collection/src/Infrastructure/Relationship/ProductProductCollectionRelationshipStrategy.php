@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -18,7 +18,7 @@ use Ergonode\ProductCollection\Domain\Query\ProductCollectionQueryInterface;
 
 class ProductProductCollectionRelationshipStrategy implements RelationshipStrategyInterface
 {
-    private const MESSAGE = 'Object has active relationships with {relations}';
+    private const MESSAGE = 'Object has active relationships with product collection %relations%';
 
     private ProductCollectionQueryInterface $query;
 

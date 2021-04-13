@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -19,7 +19,7 @@ use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 
 /**
  * @Route(
@@ -48,7 +48,7 @@ class TemplateDeleteAction
     }
 
     /**
-     * @IsGranted("TEMPLATE_DESIGNER_DELETE")
+     * @IsGranted("DESIGNER_DELETE_TEMPLATE")
      *
      * @SWG\Tag(name="Designer")
      * @SWG\Parameter(

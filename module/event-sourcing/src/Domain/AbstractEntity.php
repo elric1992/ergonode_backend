@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -8,12 +8,8 @@ declare(strict_types=1);
 
 namespace Ergonode\EventSourcing\Domain;
 
-use Ergonode\EventSourcing\Infrastructure\DomainEventInterface;
-use JMS\Serializer\Annotation as JMS;
+use Ergonode\SharedKernel\Domain\AggregateEventInterface;
 
-/**
- * @JMS\ExclusionPolicy("all")
- */
 abstract class AbstractEntity
 {
     protected ?AbstractAggregateRoot $aggregateRoot;
@@ -21,7 +17,7 @@ abstract class AbstractEntity
     /**
      * @throws \Exception
      */
-    public function apply(DomainEventInterface $event): void
+    public function apply(AggregateEventInterface $event): void
     {
         $this->aggregateRoot->apply($event);
     }
@@ -31,7 +27,7 @@ abstract class AbstractEntity
         $this->aggregateRoot = $aggregateRoot;
     }
 
-    public function handle(DomainEventInterface $event, \DateTime $recordedAt): void
+    public function handle(AggregateEventInterface $event, \DateTime $recordedAt): void
     {
         $classArray = explode('\\', get_class($event));
         $class = end($classArray);

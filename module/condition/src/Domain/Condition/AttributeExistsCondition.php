@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,16 +11,12 @@ namespace Ergonode\Condition\Domain\Condition;
 
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
 use Ergonode\Condition\Domain\ConditionInterface;
-use JMS\Serializer\Annotation as JMS;
 
 class AttributeExistsCondition implements ConditionInterface
 {
     public const TYPE = 'ATTRIBUTE_EXISTS_CONDITION';
     public const PHRASE = 'ATTRIBUTE_EXISTS_CONDITION_PHRASE';
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\AttributeId")
-     */
     private AttributeId $attribute;
 
     public function __construct(AttributeId $attribute)
@@ -28,11 +24,6 @@ class AttributeExistsCondition implements ConditionInterface
         $this->attribute = $attribute;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @JMS\VirtualProperty()
-     */
     public function getType(): string
     {
         return self::TYPE;

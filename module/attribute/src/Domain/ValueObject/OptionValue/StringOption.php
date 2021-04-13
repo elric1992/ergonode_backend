@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,30 +10,14 @@ declare(strict_types=1);
 namespace Ergonode\Attribute\Domain\ValueObject\OptionValue;
 
 use Ergonode\Attribute\Domain\ValueObject\OptionInterface;
-use JMS\Serializer\Annotation as JMS;
 
 class StringOption implements OptionInterface
 {
-    public const TYPE = 'string';
-
-    /**
-     * @JMS\Type("string")
-     */
     private string $value;
 
     public function __construct(string $value)
     {
         $this->value = $value;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @JMS\VirtualProperty()
-     */
-    public function getType(): string
-    {
-        return self::TYPE;
     }
 
     public function getValue(): string

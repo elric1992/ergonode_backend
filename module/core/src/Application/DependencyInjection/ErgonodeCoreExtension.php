@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -45,6 +45,7 @@ class ErgonodeCoreExtension extends Extension implements PrependExtensionInterfa
     public function prepend(ContainerBuilder $container): void
     {
         $this->prependNelmioApiDoc($container);
+        $this->prependMessenger($container);
     }
 
     private function prependNelmioApiDoc(ContainerBuilder $container): void
@@ -55,5 +56,12 @@ class ErgonodeCoreExtension extends Extension implements PrependExtensionInterfa
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config'));
 
         $loader->load('nelmio_api_doc.yaml');
+    }
+
+    private function prependMessenger(ContainerBuilder $container): void
+    {
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config'));
+
+        $loader->load('messenger.yaml');
     }
 }

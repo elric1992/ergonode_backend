@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -9,53 +9,36 @@ declare(strict_types=1);
 
 namespace Ergonode\Product\Domain\Event;
 
-use Ergonode\EventSourcing\Infrastructure\DomainEventInterface;
+use Ergonode\SharedKernel\Domain\AggregateEventInterface;
 use Ergonode\Product\Domain\ValueObject\Sku;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
 use Ergonode\SharedKernel\Domain\Aggregate\ProductId;
 use Ergonode\Value\Domain\ValueObject\ValueInterface;
-use JMS\Serializer\Annotation as JMS;
 use Ergonode\SharedKernel\Domain\Aggregate\TemplateId;
 
-class ProductCreatedEvent implements DomainEventInterface
+class ProductCreatedEvent implements AggregateEventInterface
 {
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\ProductId")
-     */
     private ProductId $id;
 
-    /**
-     * @JMS\Type("Ergonode\Product\Domain\ValueObject\Sku")
-     */
     private Sku $sku;
 
-    /**
-     * @JMS\Type("string")
-     */
     private string $type;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\TemplateId")
-     */
     private TemplateId $templateId;
 
     /**
      * @var CategoryId[]
-     *
-     * @JMS\Type("array<Ergonode\SharedKernel\Domain\Aggregate\CategoryId>")
      */
     private array $categories;
 
     /**
      * @var ValueInterface[]
-     *
-     * @JMS\Type("array<string,Ergonode\Value\Domain\ValueObject\ValueInterface>")
      */
     private array $attributes;
 
     /**
-     * @param array $categories
-     * @param array $attributes
+     * @param CategoryId[] $categories
+     * @param ValueInterface[] $attributes
      */
     public function __construct(
         ProductId $id,

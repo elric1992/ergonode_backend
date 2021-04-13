@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -18,7 +18,6 @@ class DbalImportFactory
 {
     /**
      * @param array $record
-     *
      *
      * @throws \ReflectionException
      */
@@ -51,7 +50,6 @@ class DbalImportFactory
             'status' => new ImportStatus($record['status']),
             'sourceId' => new SourceId($record['source_id']),
             'file' => $record['file'],
-            'records' => $record['records'],
             'startedAt' => $record['started_at'] ? new \DateTime($record['started_at']) : null,
             'endedAt' => $record['ended_at'] ? new \DateTime($record['ended_at']) : null,
         ];

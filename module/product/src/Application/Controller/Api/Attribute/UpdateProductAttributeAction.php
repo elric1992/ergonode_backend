@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Ergonode\Product\Domain\Command\Attribute\ChangeProductAttributeCommand;
 use Ergonode\Api\Application\Response\SuccessResponse;
 use Ergonode\Api\Application\Exception\ViolationsHttpException;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Ergonode\Attribute\Infrastructure\Provider\AttributeValueConstraintProvider;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Ergonode\Core\Domain\Query\LanguageQueryInterface;
@@ -57,7 +57,7 @@ class UpdateProductAttributeAction
      *     }
      * )
      *
-     * @IsGranted("PRODUCT_UPDATE")
+     * @IsGranted("PRODUCT_ATTRIBUTE_PUT")
      * @IsGranted("edit", subject="language")
      *
      * @SWG\Tag(name="Product")

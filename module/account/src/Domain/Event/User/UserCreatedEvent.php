@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,59 +12,32 @@ namespace Ergonode\Account\Domain\Event\User;
 use Ergonode\Account\Domain\ValueObject\Password;
 use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\Core\Domain\ValueObject\LanguagePrivileges;
-use Ergonode\EventSourcing\Infrastructure\DomainEventInterface;
+use Ergonode\SharedKernel\Domain\AggregateEventInterface;
 use Ergonode\SharedKernel\Domain\Aggregate\RoleId;
 use Ergonode\SharedKernel\Domain\Aggregate\UserId;
 use Ergonode\SharedKernel\Domain\ValueObject\Email;
-use JMS\Serializer\Annotation as JMS;
 
-class UserCreatedEvent implements DomainEventInterface
+class UserCreatedEvent implements AggregateEventInterface
 {
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\UserId")
-     */
     private UserId $id;
 
-    /**
-     * @JMS\Type("string")
-     */
     private string $firstName;
 
-    /**
-     * @JMS\Type("string")
-     */
     private string $lastName;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\ValueObject\Email")
-     */
     private Email $email;
 
-    /**
-     * @JMS\Type("Ergonode\Account\Domain\ValueObject\Password")
-     */
     private Password $password;
 
-    /**
-     * @JMS\Type("Ergonode\Core\Domain\ValueObject\Language")
-     */
     private Language $language;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\RoleId")
-     */
     private RoleId $roleId;
 
     /**
      * @var LanguagePrivileges[]
-     *
-     * @JMS\Type("array<string, Ergonode\Core\Domain\ValueObject\LanguagePrivileges>")
      */
     private array $languagePrivilegesCollection;
 
-    /**
-     * @JMS\Type("boolean")
-     */
     private bool $isActive;
 
     /**

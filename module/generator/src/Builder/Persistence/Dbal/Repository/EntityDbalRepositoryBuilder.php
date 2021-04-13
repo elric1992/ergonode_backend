@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,12 +10,12 @@ declare(strict_types=1);
 namespace Ergonode\Generator\Builder\Persistence\Dbal\Repository;
 
 use Ergonode\EventSourcing\Domain\AbstractAggregateRoot;
-use Ergonode\EventSourcing\Infrastructure\Bus\EventBusInterface;
 use Ergonode\EventSourcing\Infrastructure\DomainEventStoreInterface;
 use Ergonode\Generator\Builder\BuilderInterface;
 use Ergonode\Generator\Builder\FileBuilder;
 use Ergonode\Generator\Builder\MethodBuilder;
 use Ergonode\Generator\Builder\PropertyBuilder;
+use Ergonode\SharedKernel\Domain\Bus\DomainEventBusInterface;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpFile;
 
@@ -55,7 +55,7 @@ class EntityDbalRepositoryBuilder implements BuilderInterface
 
         $properties = [
             'store' => DomainEventStoreInterface::class,
-            'dispatcher' => EventBusInterface::class,
+            'dispatcher' => DomainEventBusInterface::class,
         ];
 
         foreach ($properties as $name => $type) {

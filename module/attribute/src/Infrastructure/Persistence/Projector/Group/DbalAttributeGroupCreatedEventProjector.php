@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,7 +12,7 @@ namespace Ergonode\Attribute\Infrastructure\Persistence\Projector\Group;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Ergonode\Attribute\Domain\Event\Group\AttributeGroupCreatedEvent;
-use JMS\Serializer\SerializerInterface;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 
 class DbalAttributeGroupCreatedEventProjector
 {
@@ -38,7 +38,7 @@ class DbalAttributeGroupCreatedEventProjector
             [
                 'id' => $event->getAggregateId()->getValue(),
                 'code' => $event->getCode(),
-                'name' => $this->serializer->serialize($event->getName(), 'json'),
+                'name' => $this->serializer->serialize($event->getName()),
             ]
         );
     }

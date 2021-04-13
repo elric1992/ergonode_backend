@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,7 +10,6 @@ namespace Ergonode\ImporterErgonode1\Domain\Entity;
 
 use Ergonode\Importer\Domain\Entity\Source\AbstractSource;
 use Ergonode\SharedKernel\Domain\Aggregate\SourceId;
-use JMS\Serializer\Annotation as JMS;
 use Webmozart\Assert\Assert;
 
 class ErgonodeZipSource extends AbstractSource
@@ -35,9 +34,6 @@ class ErgonodeZipSource extends AbstractSource
         self::OPTIONS,
     ];
 
-    /**
-     * @JMS\Type("array<string>")
-     */
     private array $import;
 
     public function __construct(

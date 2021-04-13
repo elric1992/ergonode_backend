@@ -26,22 +26,25 @@ services:
 
     Ergonode\Workflow\Infrastructure\Persistence\Projector\:
         resource: '../../Infrastructure/Persistence/Projector/*'
-        tags: ['messenger.message_handler']
+        tags: ['ergonode.event_sourcing.projector']
 
-    Ergonode\Workflow\Infrastructure\Handler\Event\ProductValueChangedEventHandler:
-        tags: [{name: 'messenger.message_handler', priority: 10}]
+    Ergonode\Workflow\Domain\Repository\StatusRepositoryInterface: '@Ergonode\Workflow\Infrastructure\Persistence\Repository\EventStoreStatusRepository'
+    Ergonode\Workflow\Domain\Repository\WorkflowRepositoryInterface: '@Ergonode\Workflow\Infrastructure\Persistence\Repository\EventStoreWorkflowRepository'
 
-    Ergonode\Workflow\Infrastructure\JMS\Serializer\Handler\:
-        resource: '../../Infrastructure/JMS/Serializer/Handler/*'
-        tags: ['jms_serializer.subscribing_handler']
-
-    Ergonode\Workflow\Domain\Repository\StatusRepositoryInterface: '@Ergonode\Workflow\Infrastructure\Persistence\Repository\DbalStatusRepository'
-    Ergonode\Workflow\Domain\Repository\WorkflowRepositoryInterface: '@Ergonode\Workflow\Infrastructure\Persistence\Repository\DbalWorkflowRepository'
     Ergonode\Workflow\Domain\Query\StatusQueryInterface: '@Ergonode\Workflow\Infrastructure\Persistence\Query\DbalStatusQuery'
+    Ergonode\Workflow\Domain\Query\StatusGridQueryInterface: '@Ergonode\Workflow\Infrastructure\Persistence\Query\DbalStatusGridQuery'
+    Ergonode\Workflow\Domain\Query\TransitionGridQueryInterface: '@Ergonode\Workflow\Infrastructure\Persistence\Query\DbalTransitionGridQuery'
     Ergonode\Workflow\Domain\Query\TransitionQueryInterface: '@Ergonode\Workflow\Infrastructure\Persistence\Query\DbalTransitionQuery'
     Ergonode\Workflow\Domain\Query\WorkflowQueryInterface: '@Ergonode\Workflow\Infrastructure\Persistence\Query\DbalWorkflowQuery'
+    Ergonode\Workflow\Domain\Query\ProductWorkflowStatusQueryInterface: '@Ergonode\Workflow\Infrastructure\Persistence\Query\DbalProductWorkflowStatusQuery'
 
     Ergonode\Workflow\Application\Request\ParamConverter\AbstractWorkflowParamConverter:
         class: Ergonode\Workflow\Application\Request\ParamConverter\AbstractWorkflowParamConverter
         tags:
             - { name: request.param_converter, priority: 2, converter: abstract_workflow_param_converter }
+
+    Ergonode\Workflow\Domain\Factory\AddStatusToProductFactoryDecorator:
+        decorates: Ergonode\Product\Domain\Factory\ProductFactoryInterface
+        arguments:
+            - '@Ergonode\Workflow\Domain\Factory\AddStatusToProductFactoryDecorator.inner'
+

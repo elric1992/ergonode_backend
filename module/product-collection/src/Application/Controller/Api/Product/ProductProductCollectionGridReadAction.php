@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -13,14 +13,15 @@ use Ergonode\Api\Application\Response\SuccessResponse;
 use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\Grid\Renderer\GridRenderer;
 use Ergonode\Grid\RequestGridConfiguration;
-use Ergonode\ProductCollection\Domain\Query\ProductCollectionQueryInterface;
-use Ergonode\ProductCollection\Infrastructure\Grid\ProductProductCollectionGrid;
+use Ergonode\ProductCollection\Infrastructure\Grid\ProductProductCollectionGridBuilder;
 use Ergonode\Product\Domain\Entity\AbstractProduct;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Ergonode\ProductCollection\Domain\Query\ProductProductCollectionGridQueryInterface;
+use Ergonode\Grid\Factory\DbalDataSetFactory;
 
 /**
  * @Route(
@@ -31,26 +32,30 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProductProductCollectionGridReadAction
 {
-    private ProductProductCollectionGrid $grid;
+    private ProductProductCollectionGridBuilder $gridBuilder;
 
-    private ProductCollectionQueryInterface $collectionQuery;
+    private ProductProductCollectionGridQueryInterface $collectionQuery;
+
+    private DbalDataSetFactory $factory;
 
     private GridRenderer $gridRenderer;
 
     public function __construct(
-        ProductProductCollectionGrid $grid,
-        ProductCollectionQueryInterface $productQuery,
+        ProductProductCollectionGridBuilder $gridBuilder,
+        ProductProductCollectionGridQueryInterface $collectionQuery,
+        DbalDataSetFactory $factory,
         GridRenderer $gridRenderer
     ) {
-        $this->grid = $grid;
-        $this->collectionQuery = $productQuery;
+        $this->gridBuilder = $gridBuilder;
+        $this->collectionQuery = $collectionQuery;
+        $this->factory = $factory;
         $this->gridRenderer = $gridRenderer;
     }
 
     /**
-     * @IsGranted("PRODUCT_READ")
+     * @IsGranted("PRODUCT_COLLECTION_GET_PRODUCT_GRID")
      *
-     * @SWG\Tag(name="Product")
+     * @SWG\Tag(name="Product Collection")
      * @SWG\Parameter(
      *     name="product",
      *     in="path",
@@ -132,14 +137,9 @@ class ProductProductCollectionGridReadAction
         RequestGridConfiguration $configuration,
         AbstractProduct $product
     ): Response {
-        $dataSet = $this->collectionQuery->getDataSetByProduct($language, $product->getId());
-
-        $data = $this->gridRenderer->render(
-            $this->grid,
-            $configuration,
-            $dataSet,
-            $language
-        );
+        $grid = $this->gridBuilder->build($configuration, $language);
+        $dataSet = $this->factory->create($this->collectionQuery->getGridQuery($language, $product->getId()));
+        $data = $this->gridRenderer->render($grid, $configuration, $dataSet);
 
         return new SuccessResponse($data);
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -8,37 +8,35 @@ declare(strict_types=1);
 
 namespace Ergonode\ImporterErgonode1\Domain\Command\Import;
 
-use Ergonode\Attribute\Domain\ValueObject\AttributeCode;
-use Ergonode\Attribute\Domain\ValueObject\AttributeScope;
-use Ergonode\EventSourcing\Infrastructure\DomainCommandInterface;
-use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
+use Ergonode\SharedKernel\Domain\DomainCommandInterface;
 use Ergonode\SharedKernel\Domain\Aggregate\ImportId;
+use Ergonode\SharedKernel\Domain\Aggregate\ImportLineId;
 
 class ImportAttributeCommand implements DomainCommandInterface
 {
+    private ImportLineId $id;
     private ImportId $importId;
-    private AttributeId $id;
-    private AttributeCode $code;
+    private string $code;
     private string $type;
-    private AttributeScope $scope;
+    private string $scope;
     private array $parameters;
     private array $label;
     private array $hint;
     private array $placeholder;
 
     public function __construct(
+        ImportLineId $id,
         ImportId $importId,
-        AttributeId $id,
-        AttributeCode $code,
+        string $code,
         string $type,
-        AttributeScope $scope,
+        string $scope,
         array $parameters,
         array $label,
         array $hint,
         array $placeholder
     ) {
-        $this->importId = $importId;
         $this->id = $id;
+        $this->importId = $importId;
         $this->code = $code;
         $this->type = $type;
         $this->scope = $scope;
@@ -48,17 +46,17 @@ class ImportAttributeCommand implements DomainCommandInterface
         $this->placeholder = $placeholder;
     }
 
+    public function getId(): ImportLineId
+    {
+        return $this->id;
+    }
+
     public function getImportId(): ImportId
     {
         return $this->importId;
     }
 
-    public function getId(): AttributeId
-    {
-        return $this->id;
-    }
-
-    public function getCode(): AttributeCode
+    public function getCode(): string
     {
         return $this->code;
     }
@@ -68,7 +66,7 @@ class ImportAttributeCommand implements DomainCommandInterface
         return $this->type;
     }
 
-    public function getScope(): AttributeScope
+    public function getScope(): string
     {
         return $this->scope;
     }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -26,6 +26,7 @@ use Ergonode\SharedKernel\Domain\Aggregate\AttributeGroupId;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
 use Ergonode\SharedKernel\Domain\Aggregate\MultimediaId;
 use Ergonode\SharedKernel\Domain\Aggregate\UnitId;
+use Ergonode\Attribute\Domain\ValueObject\AttributeScope;
 
 class DbalAttributeQuery implements AttributeQueryInterface
 {
@@ -125,6 +126,23 @@ class DbalAttributeQuery implements AttributeQueryInterface
         return null;
     }
 
+    public function findAttributeScope(AttributeId $attributeId): ?AttributeScope
+    {
+        $qb = $this->getQuery();
+
+        $result = $qb
+            ->where($qb->expr()->eq('id', ':id'))
+            ->setParameter(':id', $attributeId->getValue())
+            ->execute()
+            ->fetch();
+
+        if ($result) {
+            return new AttributeScope($result['scope']);
+        }
+
+        return null;
+    }
+
     public function findAttributeIdByCode(AttributeCode $code): ?AttributeId
     {
         $qb = $this->getQuery();
@@ -137,6 +155,23 @@ class DbalAttributeQuery implements AttributeQueryInterface
 
         if ($result) {
             return new AttributeId($result['id']);
+        }
+
+        return null;
+    }
+
+    public function findAttributeCodeById(AttributeId $id): ?AttributeCode
+    {
+        $qb = $this->getQuery();
+
+        $result = $qb
+            ->where($qb->expr()->eq('id', ':id'))
+            ->setParameter(':id', $id->getValue())
+            ->execute()
+            ->fetch();
+
+        if ($result) {
+            return new AttributeCode($result['code']);
         }
 
         return null;
@@ -187,11 +222,11 @@ class DbalAttributeQuery implements AttributeQueryInterface
     }
 
     /**
-     * @param array $types
+     * @param string[] $types
      *
      * @return string[]
      */
-    public function getAttributeCodes(array $types = []): array
+    public function getAttributeCodes(array $types = [], bool $includeSystem = true): array
     {
         $qb = $this->getQuery()
             ->select('code');
@@ -199,6 +234,11 @@ class DbalAttributeQuery implements AttributeQueryInterface
         if ($types) {
             $qb->andWhere($qb->expr()->in('type', ':types'))
                 ->setParameter(':types', $types, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
+        }
+
+        if (false === $includeSystem) {
+            $qb->andWhere($qb->expr()->in('system', ':system'))
+                ->setParameter(':system', false, \PDO::PARAM_BOOL);
         }
 
         return $qb

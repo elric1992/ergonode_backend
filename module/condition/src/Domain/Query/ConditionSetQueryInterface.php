@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,13 +12,19 @@ namespace Ergonode\Condition\Domain\Query;
 use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\Grid\DataSetInterface;
 use Ergonode\SharedKernel\Domain\Aggregate\AttributeId;
+use Ergonode\SharedKernel\Domain\Aggregate\ConditionSetId;
 
 interface ConditionSetQueryInterface
 {
     public function getDataSet(Language $language): DataSetInterface;
 
     /**
-     * @return array
+     * @return ConditionSetId[]
      */
     public function findAttributeIdConditionRelations(AttributeId $attributeId): array;
+
+    /**
+     * @return ConditionSetId[]
+     */
+    public function findLanguageConditionRelations(Language $language): array;
 }

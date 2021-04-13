@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -28,7 +28,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CategoryTreeReadAction
 {
     /**
-     * @IsGranted("CATEGORY_TREE_READ")
+     * @IsGranted("CATEGORY_GET_TREE")
      *
      * @SWG\Tag(name="Tree")
      * @SWG\Parameter(

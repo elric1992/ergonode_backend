@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,58 +10,56 @@ namespace Ergonode\Importer\Domain\Command\Import;
 
 use Ergonode\Importer\Domain\Command\ImporterCommandInterface;
 use Ergonode\SharedKernel\Domain\Aggregate\ImportId;
-use Ergonode\Product\Domain\ValueObject\Sku;
-use Ergonode\Category\Domain\ValueObject\CategoryCode;
-use Webmozart\Assert\Assert;
-use Ergonode\Attribute\Domain\ValueObject\AttributeCode;
+use Ergonode\Core\Domain\ValueObject\TranslatableString;
+use Ergonode\SharedKernel\Domain\Aggregate\ImportLineId;
 
 class ImportVariableProductCommand implements ImporterCommandInterface
 {
+    private ImportLineId $id;
+
     private ImportId $importId;
 
-    private Sku $sku;
+    private string $sku;
 
     private string $template;
 
     /**
-     * @var CategoryCode[]
+     * @var string[]
      */
     private array $categories;
 
     /**
-     * @var AttributeCode[]
+     * @var string[]
      */
     private array $bindings;
 
     /**
-     * @var Sku[]
+     * @var string[]
      */
     private array $children;
 
     /**
-     * @var string[]
+     * @var TranslatableString[]
      */
     private array $attributes;
 
     /**
-     * @param CategoryCode[]  $categories
-     * @param AttributeCode[] $bindings
-     * @param Sku[]           $children
-     * @param string[]        $attributes
+     * @param string[] $categories
+     * @param string[] $bindings
+     * @param string[] $children
+     * @param TranslatableString[] $attributes
      */
     public function __construct(
+        ImportLineId $id,
         ImportId $importId,
-        Sku $sku,
+        string $sku,
         string $template,
         array $categories,
         array $bindings,
         array $children,
         array $attributes
     ) {
-        Assert::allIsInstanceOf($categories, CategoryCode::class);
-        Assert::allIsInstanceOf($bindings, AttributeCode::class);
-        Assert::allIsInstanceOf($children, Sku::class);
-
+        $this->id = $id;
         $this->importId = $importId;
         $this->sku = $sku;
         $this->template = $template;
@@ -71,12 +69,17 @@ class ImportVariableProductCommand implements ImporterCommandInterface
         $this->attributes = $attributes;
     }
 
+    public function getId(): ImportLineId
+    {
+        return $this->id;
+    }
+
     public function getImportId(): ImportId
     {
         return $this->importId;
     }
 
-    public function getSku(): Sku
+    public function getSku(): string
     {
         return $this->sku;
     }
@@ -87,7 +90,7 @@ class ImportVariableProductCommand implements ImporterCommandInterface
     }
 
     /**
-     * @return CategoryCode[]
+     * @return string[]
      */
     public function getCategories(): array
     {
@@ -95,7 +98,7 @@ class ImportVariableProductCommand implements ImporterCommandInterface
     }
 
     /**
-     * @return AttributeCode[]
+     * @return string[]
      */
     public function getBindings(): array
     {
@@ -103,7 +106,7 @@ class ImportVariableProductCommand implements ImporterCommandInterface
     }
 
     /**
-     * @return Sku[]
+     * @return string[]
      */
     public function getChildren(): array
     {

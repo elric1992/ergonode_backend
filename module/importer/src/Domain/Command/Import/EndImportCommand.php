@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,13 +11,9 @@ namespace Ergonode\Importer\Domain\Command\Import;
 
 use Ergonode\Importer\Domain\Command\ImporterCommandInterface;
 use Ergonode\SharedKernel\Domain\Aggregate\ImportId;
-use JMS\Serializer\Annotation as JMS;
 
 class EndImportCommand implements ImporterCommandInterface
 {
-    /**
-     * @JMS\Type("Ergonode\Importer\Domain\Entity\ImportId")
-     */
     private ImportId $id;
 
     public function __construct(ImportId $id)

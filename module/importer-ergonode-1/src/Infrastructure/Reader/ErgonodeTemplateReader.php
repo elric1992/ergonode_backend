@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,6 +12,11 @@ use Ergonode\ImporterErgonode1\Infrastructure\Model\TemplateModel;
 
 class ErgonodeTemplateReader extends AbstractErgonodeReader
 {
+    private const KEYS = [
+        '_name',
+        '_language',
+    ];
+
     public function read(): ?TemplateModel
     {
         $item = null;
@@ -20,15 +25,14 @@ class ErgonodeTemplateReader extends AbstractErgonodeReader
             $record = $this->records->current();
 
             $item = new TemplateModel(
-                $record['_id'],
                 $record['_name'],
-                $record['_type'],
-                (int) $record['_x'],
-                (int) $record['_y'],
-                (int) $record['_width'],
-                (int) $record['_height'],
-                $record['_properties']
             );
+
+            foreach ($record as $key => $value) {
+                if ('' !== $value && !array_key_exists($key, self::KEYS)) {
+                    $item->addParameter($key, $value);
+                }
+            }
 
             $this->records->next();
         }

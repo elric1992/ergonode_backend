@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -15,6 +15,7 @@ use Ergonode\Category\Domain\Repository\CategoryRepositoryInterface;
 use Ergonode\Category\Domain\ValueObject\CategoryCode;
 use Ergonode\Core\Domain\ValueObject\TranslatableString;
 use Ergonode\SharedKernel\Domain\Aggregate\CategoryId;
+use Ergonode\Category\Domain\Entity\AbstractCategory;
 
 class CategoryImportAction
 {
@@ -33,7 +34,7 @@ class CategoryImportAction
     /**
      * @throws \Exception
      */
-    public function action(CategoryCode $code, TranslatableString $name): void
+    public function action(CategoryCode $code, TranslatableString $name): AbstractCategory
     {
         $categoryId = $this->query->findIdByCode($code);
 
@@ -49,5 +50,7 @@ class CategoryImportAction
         }
 
         $this->repository->save($category);
+
+        return $category;
     }
 }

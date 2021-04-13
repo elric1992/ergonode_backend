@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,27 +11,28 @@ namespace Ergonode\Designer\Domain\Builder\Strategy;
 
 use Ergonode\Core\Domain\ValueObject\Language;
 use Ergonode\Designer\Domain\Builder\BuilderTemplateElementStrategyInterface;
-use Ergonode\Designer\Domain\Entity\TemplateElement;
-use Ergonode\Designer\Domain\ValueObject\TemplateElement\UiTemplateElementProperty;
+use Ergonode\Designer\Domain\Entity\TemplateElementInterface;
 use Ergonode\Designer\Domain\View\ViewTemplateElement;
+use Ergonode\Designer\Domain\Entity\Element\UiTemplateElement;
+use Webmozart\Assert\Assert;
 
 class SectionViewTemplateElementStrategy implements BuilderTemplateElementStrategyInterface
 {
-    public function isSupported(string $variant, string $type): bool
+    public function isSupported(string $type): bool
     {
-        return UiTemplateElementProperty::VARIANT === $variant && 'SECTION' === $type;
+        return UiTemplateElement::TYPE === $type;
     }
 
-    public function build(TemplateElement $element, Language $language): ViewTemplateElement
+    public function build(TemplateElementInterface $element, Language $language): ViewTemplateElement
     {
-        /** @var UiTemplateElementProperty $property */
-        $property = $element->getProperties();
+        /** @var UiTemplateElement $element */
+        Assert::isInstanceOf($element, UiTemplateElement::class);
 
         return new ViewTemplateElement(
             $element->getPosition(),
             $element->getSize(),
-            $property->getLabel(),
-            $element->getType()
+            $element->getLabel(),
+            'SECTION'
         );
     }
 }

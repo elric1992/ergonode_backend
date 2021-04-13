@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -27,11 +27,12 @@ class UpdateScheduleCommandHandler
         $scheduler = $this->repository->load($command->getId());
 
         Assert::isInstanceOf($scheduler, Scheduler::class);
-        if ($command->isActive()) {
-            $scheduler->active($command->getStart(), $command->getHour(), $command->getMinute());
-        } else {
-            $scheduler->deActive();
-        }
+        $scheduler->setUp(
+            $command->isActive(),
+            $command->getStart(),
+            $command->getHour(),
+            $command->getMinute(),
+        );
 
         $this->repository->save($scheduler);
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Ergonode\ExporterMagento2\Application\Form;
 
-use Ergonode\Core\Application\Form\Type\LanguageType;
+use Ergonode\Core\Application\Form\Type\LanguageActiveType;
 use Ergonode\ExporterMagento2\Application\Form\Model\ExporterMagento2CsvConfigurationModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -33,7 +33,7 @@ class ExporterMagento2ConfigurationForm extends AbstractType
             )
             ->add(
                 'default_language',
-                LanguageType::class,
+                LanguageActiveType::class,
                 [
                     'property_path' => 'defaultLanguage',
                 ]

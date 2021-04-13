@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Ergonode\Product\Infrastructure\Handler;
 
-use Ergonode\Account\Application\Security\Security;
+use Ergonode\Core\Application\Security\Security;
 use Ergonode\Product\Domain\Entity\AbstractProduct;
 use Ergonode\Attribute\Domain\ValueObject\AttributeCode;
 use Ergonode\Product\Domain\Entity\Attribute\EditedBySystemAttribute;

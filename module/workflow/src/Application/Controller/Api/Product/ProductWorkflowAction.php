@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -47,7 +47,7 @@ class ProductWorkflowAction
     }
 
     /**
-     * @IsGranted("PRODUCT_READ")
+     * @IsGranted("WORKFLOW_GET_PRODUCT")
      *
      * @SWG\Tag(name="Product")
      * @SWG\Parameter(

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -35,15 +35,18 @@ class ImportMultimediaFromUrlCommandHandler
     public function __invoke(ImportMultimediaFromWebCommand $command): void
     {
         try {
-            $this->action->action(
+            $id = $this->action->action(
                 $command->getImportId(),
                 $command->getUrl(),
                 $command->getName()
             );
+            $this->repository->markLineAsSuccess($command->getId(), $id);
         } catch (ImportException $exception) {
+            $this->repository->markLineAsFailure($command->getId());
             $this->repository->addError($command->getImportId(), $exception->getMessage(), $exception->getParameters());
         } catch (\Exception $exception) {
             $message = 'Can\'t import multimedia {name} from url {url}';
+            $this->repository->markLineAsFailure($command->getId());
             $this->repository->addError(
                 $command->getImportId(),
                 $message,

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,13 +11,13 @@ namespace Ergonode\EventSourcing\Infrastructure\Storage;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
-use Ergonode\Core\Domain\User\AggregateUserInterface;
 use Ergonode\EventSourcing\Infrastructure\DomainEventFactoryInterface;
 use Ergonode\EventSourcing\Infrastructure\DomainEventStorageInterface;
 use Ergonode\EventSourcing\Infrastructure\Provider\DomainEventProviderInterface;
 use Ergonode\EventSourcing\Infrastructure\Stream\DomainEventStream;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 use Ergonode\SharedKernel\Domain\AggregateId;
-use JMS\Serializer\SerializerInterface;
+use Ergonode\SharedKernel\Domain\User\UserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class DbalDomainEventStorage implements DomainEventStorageInterface
@@ -57,7 +57,7 @@ class DbalDomainEventStorage implements DomainEventStorageInterface
         $qb = $this->connection->createQueryBuilder();
 
         $records = $qb
-            ->select('es.id, es.aggregate_id, es.sequence, es.payload, es.recorded_by, es.recorded_at')
+            ->select('es.aggregate_id, es.sequence, es.payload, es.recorded_at')
             ->addSelect('ese.event_class as event')
             ->from($table, 'es')
             ->join('es', 'event_store_event', 'ese', 'es.event_id = ese.id')
@@ -87,7 +87,7 @@ class DbalDomainEventStorage implements DomainEventStorageInterface
             $userId = null;
             if ($token) {
                 $user = $token->getUser();
-                if ($user instanceof AggregateUserInterface) {
+                if ($user instanceof UserInterface) {
                     $userId = $user->getId()->getValue();
                 }
             }
@@ -113,7 +113,7 @@ class DbalDomainEventStorage implements DomainEventStorageInterface
 
             $stmts = [];
             foreach ($stream as $envelope) {
-                $payload = $this->serializer->serialize($envelope->getEvent(), 'json');
+                $payload = $this->serializer->serialize($envelope->getEvent());
                 $stmt = $this->connection->prepare($sql);
 
                 $stmt->bindValue('aggregateId', $id->getValue());

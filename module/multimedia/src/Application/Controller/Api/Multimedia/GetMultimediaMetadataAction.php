@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -35,7 +35,7 @@ class GetMultimediaMetadataAction
     }
 
     /**
-     * @IsGranted("MULTIMEDIA_READ")
+     * @IsGranted("MULTIMEDIA_GET_METADATA")
      *
      * @SWG\Tag(name="Multimedia")
      * @SWG\Parameter(

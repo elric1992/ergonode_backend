@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+/**
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -17,10 +17,13 @@ class AbstractShopware6CustomFieldSetConfigTest extends TestCase
 
     private array $label;
 
+    private string $json;
+
     protected function setUp(): void
     {
         $this->translated = true;
         $this->label = [];
+        $this->json = '{"translated":true}';
     }
 
     public function testCreateModel(): void
@@ -29,6 +32,13 @@ class AbstractShopware6CustomFieldSetConfigTest extends TestCase
 
         self::assertEquals($this->translated, $model->isTranslated());
         self::assertEquals($this->label, $model->getLabel());
+    }
+
+    public function testJSON(): void
+    {
+        $model = $this->getClass();
+
+        self::assertEquals($this->json, json_encode($model->jsonSerialize(), JSON_THROW_ON_ERROR));
     }
 
     private function getClass(): AbstractShopware6CustomFieldSetConfig

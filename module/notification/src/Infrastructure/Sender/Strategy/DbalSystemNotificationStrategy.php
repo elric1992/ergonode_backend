@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -10,10 +10,10 @@ namespace Ergonode\Notification\Infrastructure\Sender\Strategy;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 use Ergonode\SharedKernel\Domain\Aggregate\UserId;
 use Ergonode\Notification\Domain\NotificationInterface;
 use Ergonode\Notification\Infrastructure\Sender\NotificationStrategyInterface;
-use JMS\Serializer\SerializerInterface;
 use Ramsey\Uuid\Uuid;
 
 class DbalSystemNotificationStrategy implements NotificationStrategyInterface
@@ -45,8 +45,10 @@ class DbalSystemNotificationStrategy implements NotificationStrategyInterface
                 [
                     'id' => $notificationId,
                     'created_at' => $notification->getCreatedAt(),
+                    'type' => $notification->getType(),
+                    'object_id' => $notification->getObjectId() ? $notification->getObjectId()->getValue() : null,
                     'message' => $notification->getMessage(),
-                    'parameters' => $this->serializer->serialize($notification->getParameters(), 'json'),
+                    'parameters' => $this->serializer->serialize($notification->getParameters()),
                     'author_id' => $notification->getAuthorId() ? $notification->getAuthorId()->getValue() : null,
                 ],
                 [

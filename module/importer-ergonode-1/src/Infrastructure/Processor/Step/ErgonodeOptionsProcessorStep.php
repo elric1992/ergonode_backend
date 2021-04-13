@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -8,14 +8,15 @@ declare(strict_types=1);
 
 namespace Ergonode\ImporterErgonode1\Infrastructure\Processor\Step;
 
-use Ergonode\Attribute\Domain\ValueObject\AttributeCode;
-use Ergonode\Attribute\Domain\ValueObject\OptionKey;
 use Ergonode\Core\Domain\ValueObject\TranslatableString;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\ImporterErgonode1\Domain\Entity\ErgonodeZipSource;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Ergonode\Importer\Domain\Command\Import\ImportOptionCommand;
 use Ergonode\Importer\Domain\Entity\Import;
 use Ergonode\ImporterErgonode1\Infrastructure\Processor\ErgonodeProcessorStepInterface;
 use Ergonode\ImporterErgonode1\Infrastructure\Reader\ErgonodeOptionReader;
+use Ergonode\SharedKernel\Domain\Aggregate\ImportLineId;
+use Ergonode\Importer\Domain\Repository\ImportRepositoryInterface;
 
 class ErgonodeOptionsProcessorStep implements ErgonodeProcessorStepInterface
 {
@@ -23,23 +24,36 @@ class ErgonodeOptionsProcessorStep implements ErgonodeProcessorStepInterface
 
     private CommandBusInterface $commandBus;
 
-    public function __construct(CommandBusInterface $commandBus)
-    {
+    private ImportRepositoryInterface $importRepository;
+
+    public function __construct(
+        CommandBusInterface $commandBus,
+        ImportRepositoryInterface $importRepository
+    ) {
         $this->commandBus = $commandBus;
+        $this->importRepository = $importRepository;
     }
 
-    public function __invoke(Import $import, string $directory): void
+
+    public function __invoke(Import $import, ErgonodeZipSource $source, string $directory): void
     {
+        if (!$source->import(ErgonodeZipSource::OPTIONS)) {
+            return;
+        }
+
         $reader = new ErgonodeOptionReader($directory, self::FILENAME);
 
         while ($option = $reader->read()) {
+            $id = ImportLineId::generate();
             $command = new ImportOptionCommand(
+                $id,
                 $import->getId(),
-                new AttributeCode($option->getAttribute()),
-                new OptionKey($option->getCode()),
+                $option->getAttribute(),
+                $option->getCode(),
                 new TranslatableString($option->getTranslations())
             );
-            $this->commandBus->dispatch($command);
+            $this->importRepository->addLine($id, $import->getId(), 'OPTION');
+            $this->commandBus->dispatch($command, true);
         }
     }
 }

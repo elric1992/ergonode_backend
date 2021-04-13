@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -21,7 +21,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 
 /**
  * @Route(
@@ -44,7 +44,7 @@ class AvatarChangeAction
     }
 
     /**
-     * @IsGranted("USER_UPDATE")
+     * @IsGranted("ACCOUNT_POST_AVATAR")
      *
      * @SWG\Tag(name="Account")
      * @SWG\Parameter(

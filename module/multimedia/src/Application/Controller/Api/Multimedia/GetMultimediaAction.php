@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -27,7 +27,7 @@ use Ergonode\Api\Application\Response\SuccessResponse;
 class GetMultimediaAction
 {
     /**
-     * @IsGranted("MULTIMEDIA_READ")
+     * @IsGranted("MULTIMEDIA_GET")
      *
      * @SWG\Tag(name="Multimedia")
      * @SWG\Parameter(

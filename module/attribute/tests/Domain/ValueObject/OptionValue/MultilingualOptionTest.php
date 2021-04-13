@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -22,7 +22,6 @@ class MultilingualOptionTest extends TestCase
         $valueObject = new MultilingualOption($value);
 
         self::assertSame($value, $valueObject->getValue());
-        self::assertSame(MultilingualOption::TYPE, $valueObject->getType());
         self::assertSame('english,polish', (string) $valueObject);
         self::assertTrue($valueObject->isMultilingual());
     }

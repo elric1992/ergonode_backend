@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,7 +11,7 @@ namespace Ergonode\Category\Infrastructure\Persistence\Projector\Tree;
 
 use Doctrine\DBAL\Connection;
 use Ergonode\Category\Domain\Event\Tree\CategoryTreeCreatedEvent;
-use JMS\Serializer\SerializerInterface;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 
 class DbalCategoryTreeCreatedEventProjector
 {
@@ -27,9 +27,6 @@ class DbalCategoryTreeCreatedEventProjector
         $this->serializer = $serializer;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function __invoke(CategoryTreeCreatedEvent $event): void
     {
         $this->connection->insert(
@@ -37,7 +34,7 @@ class DbalCategoryTreeCreatedEventProjector
             [
                 'id' => $event->getAggregateId()->getValue(),
                 'code' => $event->getCode(),
-                'name' => $this->serializer->serialize($event->getName()->getTranslations(), 'json'),
+                'name' => $this->serializer->serialize($event->getName()->getTranslations()),
             ]
         );
     }

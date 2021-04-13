@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -27,7 +27,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AttributeGroupReadAction
 {
     /**
-     * @IsGranted("ATTRIBUTE_GROUP_READ")
+     * @IsGranted("ATTRIBUTE_GET_GROUP")
      *
      * @SWG\Tag(name="Attribute")
      * @SWG\Parameter(

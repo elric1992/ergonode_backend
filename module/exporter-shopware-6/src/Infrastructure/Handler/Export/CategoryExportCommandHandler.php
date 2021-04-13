@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+/**
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,8 +11,8 @@ namespace Ergonode\ExporterShopware6\Infrastructure\Handler\Export;
 use Ergonode\Category\Domain\Entity\AbstractCategory;
 use Ergonode\Category\Domain\Repository\CategoryRepositoryInterface;
 use Ergonode\Channel\Domain\Repository\ChannelRepositoryInterface;
-use Ergonode\Exporter\Domain\Entity\Export;
-use Ergonode\Exporter\Domain\Repository\ExportRepositoryInterface;
+use Ergonode\Channel\Domain\Entity\Export;
+use Ergonode\Channel\Domain\Repository\ExportRepositoryInterface;
 use Ergonode\ExporterShopware6\Domain\Command\Export\CategoryExportCommand;
 use Ergonode\ExporterShopware6\Domain\Entity\Shopware6Channel;
 use Ergonode\ExporterShopware6\Infrastructure\Processor\Process\CategoryShopware6ExportProcess;
@@ -49,6 +49,6 @@ class CategoryExportCommandHandler
         $category = $this->categoryRepository->load($command->getCategoryId());
         Assert::isInstanceOf($category, AbstractCategory::class);
 
-        $this->process->process($export, $channel, $category, $command->getParentCategoryId());
+        $this->process->process($command->getLineId(), $export, $channel, $category, $command->getParentCategoryId());
     }
 }

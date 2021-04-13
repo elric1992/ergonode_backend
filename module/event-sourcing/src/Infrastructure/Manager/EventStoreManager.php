@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -13,21 +13,24 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Ergonode\EventSourcing\Domain\AbstractAggregateRoot;
-use Ergonode\EventSourcing\Infrastructure\Bus\EventBusInterface;
 use Ergonode\EventSourcing\Infrastructure\DomainEventStoreInterface;
 use Ergonode\EventSourcing\Infrastructure\Snapshot\AggregateSnapshotInterface;
 use Ergonode\SharedKernel\Domain\AggregateId;
 use Psr\Log\LoggerInterface;
+use Ergonode\EventSourcing\Infrastructure\DomainEventProjectorInterface;
+use Ergonode\SharedKernel\Domain\Bus\DomainEventBusInterface;
 
-class EventStoreManager
+class EventStoreManager implements EventStoreManagerInterface
 {
     private AggregateBuilderInterface $builder;
 
     private DomainEventStoreInterface $eventStore;
 
-    private EventBusInterface $eventBus;
+    private DomainEventBusInterface $eventBus;
 
     private AggregateSnapshotInterface $snapshot;
+
+    private DomainEventProjectorInterface $projector;
 
     private Connection $connection;
 
@@ -36,8 +39,9 @@ class EventStoreManager
     public function __construct(
         AggregateBuilderInterface $builder,
         DomainEventStoreInterface $eventStore,
-        EventBusInterface $eventBus,
+        DomainEventBusInterface $eventBus,
         AggregateSnapshotInterface $snapshot,
+        DomainEventProjectorInterface $projector,
         Connection $connection,
         LoggerInterface $logger
     ) {
@@ -45,6 +49,7 @@ class EventStoreManager
         $this->eventStore = $eventStore;
         $this->eventBus = $eventBus;
         $this->snapshot = $snapshot;
+        $this->projector = $projector;
         $this->connection = $connection;
         $this->logger = $logger;
     }
@@ -96,6 +101,7 @@ class EventStoreManager
             }
 
             foreach ($events as $envelope) {
+                $this->projector->project($envelope->getEvent());
                 $this->eventBus->dispatch($envelope->getEvent());
             }
         }

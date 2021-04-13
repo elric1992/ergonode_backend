@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,6 +12,7 @@ namespace Ergonode\Multimedia\Application\Controller\Api\Multimedia;
 use Ergonode\Api\Application\Response\FileContentResponse;
 use Ergonode\Multimedia\Domain\Entity\Multimedia;
 use League\Flysystem\FilesystemInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,6 +35,8 @@ class DownloadMultimediaAction
     }
 
     /**
+     * @IsGranted("MULTIMEDIA_GET_DOWNLOAD")
+     *
      * @SWG\Tag(name="Multimedia")
      * @SWG\Parameter(
      *     name="multimedia",

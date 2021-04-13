@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -43,14 +43,14 @@ class ProductReadTemplateAction
     }
 
     /**
-     * @IsGranted("PRODUCT_READ")
+     * @IsGranted("PRODUCT_GET_TEMPLATE")
      *
      * @SWG\Tag(name="Product")
      * @SWG\Parameter(
      *     name="product",
      *     in="path",
      *     type="string",
-     *     description="Get product draft",
+     *     description="Get product template",
      * )
      * @SWG\Parameter(
      *     name="language",

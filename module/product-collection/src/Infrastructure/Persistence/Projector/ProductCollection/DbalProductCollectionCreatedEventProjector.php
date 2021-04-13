@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -13,7 +13,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Types\Types;
 use Ergonode\ProductCollection\Domain\Event\ProductCollectionCreatedEvent;
-use JMS\Serializer\SerializerInterface;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 
 class DbalProductCollectionCreatedEventProjector
 {
@@ -39,8 +39,8 @@ class DbalProductCollectionCreatedEventProjector
             [
                 'id' => $event->getAggregateId(),
                 'code' => $event->getCode(),
-                'name' => $this->serializer->serialize($event->getName()->getTranslations(), 'json'),
-                'description' => $this->serializer->serialize($event->getDescription()->getTranslations(), 'json'),
+                'name' => $this->serializer->serialize($event->getName()->getTranslations()),
+                'description' => $this->serializer->serialize($event->getDescription()->getTranslations()),
                 'type_id' => $event->getTypeId(),
                 'created_at' => $event->getCreatedAt(),
             ],

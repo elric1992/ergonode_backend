@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,28 +11,19 @@ namespace Ergonode\Workflow\Domain\Event\Transition;
 
 use Ergonode\SharedKernel\Domain\Aggregate\RoleId;
 
-use Ergonode\EventSourcing\Infrastructure\DomainEventInterface;
 use Ergonode\SharedKernel\Domain\Aggregate\TransitionId;
 use Ergonode\SharedKernel\Domain\Aggregate\WorkflowId;
-use JMS\Serializer\Annotation as JMS;
+use Ergonode\SharedKernel\Domain\AggregateEventInterface;
 use Webmozart\Assert\Assert;
 
-class TransitionRoleIdsChangedEvent implements DomainEventInterface
+class TransitionRoleIdsChangedEvent implements AggregateEventInterface
 {
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\WorkflowId")
-     */
     private WorkflowId $id;
 
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\TransitionId")
-     */
     private TransitionId $transitionId;
 
     /**
      * @var RoleId[]
-     *
-     * @JMS\Type("array<Ergonode\SharedKernel\Domain\Aggregate\RoleId>")
      */
     private array $roleIds;
 

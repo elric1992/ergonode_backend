@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -12,7 +12,7 @@ namespace Ergonode\Condition\Infrastructure\Persistence\Projector;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Ergonode\Condition\Domain\Event\ConditionSetCreatedEvent;
-use JMS\Serializer\SerializerInterface;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 
 class DbalConditionSetCreatedEventProjector
 {
@@ -37,7 +37,7 @@ class DbalConditionSetCreatedEventProjector
             self::TABLE,
             [
                 'id' => $event->getAggregateId()->getValue(),
-                'conditions' => $this->serializer->serialize($event->getConditions(), 'json'),
+                'conditions' => $this->serializer->serialize($event->getConditions()),
             ]
         );
     }

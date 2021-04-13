@@ -1,44 +1,28 @@
 framework:
     messenger:
-        buses:
-            event.bus:
-                default_middleware: allow_no_handlers
-                middleware:
-                    - 'Ergonode\EventSourcing\Infrastructure\Middleware\DbalTransactionMiddleware'
-            messenger.bus.sync:
-                default_middleware: false
-                middleware:
-                    - 'handle_message'
-            messenger.bus.async:
-                default_middleware: false
-                middleware:
-                    - 'send_message'
-                    - 'handle_message'
+        serializer:
+            default_serializer: 'messenger.transport.symfony_serializer'
         default_bus: messenger.bus.sync
         transports:
             import: "%env(MESSENGER_TRANSPORT_IMPORT_DSN)%"
             export: "%env(MESSENGER_TRANSPORT_EXPORT_DSN)%"
             core: "%env(MESSENGER_TRANSPORT_CORE_DSN)%"
-            segment: "%env(MESSENGER_TRANSPORT_SEGMENT_DSN)%"
-            completeness: "%env(MESSENGER_TRANSPORT_COMPLETENESS_DSN)%"
             notification: "%env(MESSENGER_TRANSPORT_NOTIFICATION_DSN)%"
-        routing:
-#            'Ergonode\Attribute\Domain\Command\CreateAttributeCommand': core
-#            'Ergonode\Attribute\Domain\Command\UpdateAttributeCommand': core
+            batch_action: "%env(MESSENGER_TRANSPORT_BATCH_ACTION_DSN)%"
+
+ergonode_batch_action:
+    messenger:
+        transport_name: 'batch_action'
 
 ergonode_category:
     messenger:
         transport_name: 'core'
 
-ergonode_completeness:
-    messenger:
-        transport_name: 'completeness'
-
 ergonode_designer:
     messenger:
         transport_name: 'core'
 
-ergonode_exporter:
+ergonode_channel:
     messenger:
         transport_name: 'export'
 
@@ -57,8 +41,3 @@ ergonode_mailer:
 ergonode_importer:
     messenger:
         transport_name: 'import'
-
-ergonode_segment:
-    messenger:
-        transport_name: 'segment'
-

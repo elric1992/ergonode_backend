@@ -6,3 +6,10 @@ framework:
         fallback: ['en']
     php_errors:
         log: true
+    serializer:
+        name_converter: 'serializer.name_converter.camel_case_to_snake_case'
+    cache:
+        pools:
+            aggregate.cache:
+                adapter: cache.adapter.filesystem
+                default_lifetime: 7200

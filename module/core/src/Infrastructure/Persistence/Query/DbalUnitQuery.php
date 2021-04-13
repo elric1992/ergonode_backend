@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -74,6 +74,24 @@ class DbalUnitQuery implements UnitQueryInterface
 
         if ($result) {
             return new UnitId($result);
+        }
+
+        return null;
+    }
+
+    public function findCodeById(UnitId $unitId): ?string
+    {
+        $qb = $this->getQuery();
+
+        $result = $qb->select('symbol')
+            ->where($qb->expr()->eq('id', ':id'))
+            ->setParameter(':id', $unitId->getValue())
+            ->setMaxResults(1)
+            ->execute()
+            ->fetch(\PDO::FETCH_COLUMN);
+
+        if ($result) {
+            return $result;
         }
 
         return null;

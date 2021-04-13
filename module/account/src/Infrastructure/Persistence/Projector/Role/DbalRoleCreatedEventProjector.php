@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,7 +11,7 @@ namespace Ergonode\Account\Infrastructure\Persistence\Projector\Role;
 
 use Doctrine\DBAL\Connection;
 use Ergonode\Account\Domain\Event\Role\RoleCreatedEvent;
-use JMS\Serializer\SerializerInterface;
+use Ergonode\SharedKernel\Application\Serializer\SerializerInterface;
 
 class DbalRoleCreatedEventProjector
 {
@@ -38,7 +38,7 @@ class DbalRoleCreatedEventProjector
                 'id' => $event->getAggregateId()->getValue(),
                 'name' => $event->getName(),
                 'description' => $event->getDescription(),
-                'privileges' => $this->serializer->serialize($event->getPrivileges(), 'json'),
+                'privileges' => $this->serializer->serialize($event->getPrivileges()),
                 'hidden' => $event->isHidden(),
             ],
             [

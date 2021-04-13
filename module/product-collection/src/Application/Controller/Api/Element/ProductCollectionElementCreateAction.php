@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,7 +11,7 @@ namespace Ergonode\ProductCollection\Application\Controller\Api\Element;
 
 use Ergonode\Api\Application\Exception\FormValidationHttpException;
 use Ergonode\Api\Application\Response\CreatedResponse;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Ergonode\ProductCollection\Application\Form\ProductCollectionElementCreateForm;
 use Ergonode\ProductCollection\Application\Model\ProductCollectionElementCreateFormModel;
 use Ergonode\ProductCollection\Domain\Command\AddProductCollectionElementCommand;
@@ -49,7 +49,7 @@ class ProductCollectionElementCreateAction
     }
 
     /**
-     * @IsGranted("PRODUCT_COLLECTION_CREATE")
+     * @IsGranted("PRODUCT_COLLECTION_POST_ELEMENT")
      *
      * @SWG\Tag(name="Product Collection")
      * @SWG\Parameter(

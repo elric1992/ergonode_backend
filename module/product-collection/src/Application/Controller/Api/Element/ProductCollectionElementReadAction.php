@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -31,7 +31,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductCollectionElementReadAction
 {
     /**
-     * @IsGranted("PRODUCT_COLLECTION_READ")
+     * @IsGranted("PRODUCT_COLLECTION_GET_ELEMENT")
      *
      * @SWG\Tag(name="Product Collection")
      * @SWG\Parameter(

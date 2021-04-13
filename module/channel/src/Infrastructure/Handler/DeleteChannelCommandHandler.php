@@ -2,7 +2,7 @@
 
 /**
  * Copyright © Ergonode Sp. z o.o. All rights reserved.
- * See license.txt for license details.
+ * See LICENSE.txt for license details.
  */
 
 declare(strict_types=1);
@@ -13,8 +13,8 @@ use Ergonode\Channel\Domain\Command\DeleteChannelCommand;
 use Ergonode\Channel\Domain\Entity\AbstractChannel;
 use Ergonode\Channel\Domain\Query\ExportQueryInterface;
 use Ergonode\Channel\Domain\Repository\ChannelRepositoryInterface;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
-use Ergonode\Exporter\Domain\Command\Export\DeleteExportCommand;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
+use Ergonode\Channel\Domain\Command\Export\DeleteExportCommand;
 use Webmozart\Assert\Assert;
 
 class DeleteChannelCommandHandler

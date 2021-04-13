@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -14,7 +14,7 @@ use Ergonode\Core\Domain\Command\DeleteUnitCommand;
 use Ergonode\Core\Domain\Entity\Unit;
 use Ergonode\Core\Infrastructure\Builder\ExistingRelationshipMessageBuilderInterface;
 use Ergonode\Core\Infrastructure\Resolver\RelationshipsResolverInterface;
-use Ergonode\EventSourcing\Infrastructure\Bus\CommandBusInterface;
+use Ergonode\SharedKernel\Domain\Bus\CommandBusInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,7 +48,7 @@ class UnitDeleteAction
     }
 
     /**
-     * @IsGranted("SETTINGS_DELETE")
+     * @IsGranted("CORE_DELETE_UNIT")
      *
      * @SWG\Tag(name="Unit")
      * @SWG\Parameter(

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -11,25 +11,19 @@ namespace Ergonode\Condition\Domain\Command;
 
 use Ergonode\Condition\Domain\ConditionInterface;
 use Ergonode\SharedKernel\Domain\Aggregate\ConditionSetId;
-use JMS\Serializer\Annotation as JMS;
 use Webmozart\Assert\Assert;
 
 class UpdateConditionSetCommand implements ConditionCommandInterface
 {
-    /**
-     * @JMS\Type("Ergonode\SharedKernel\Domain\Aggregate\ConditionSetId")
-     */
     private ConditionSetId $id;
 
     /**
      * @var ConditionInterface[]
-     *
-     * @JMS\Type("array<Ergonode\Condition\Domain\ConditionInterface>")
      */
     private array $conditions;
 
     /**
-     * @param array $conditions
+     * @param ConditionInterface[] $conditions
      */
     public function __construct(ConditionSetId $id, array $conditions = [])
     {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -19,7 +19,7 @@ use Ergonode\Core\Infrastructure\Model\RelationshipGroup;
 
 class StatusWorkflowRelationshipStrategy implements RelationshipStrategyInterface
 {
-    private const MESSAGE = 'Object has active relationships with {relations}';
+    private const MESSAGE = 'Object has active relationships with workflow {relations}';
 
     private TransitionQueryInterface $query;
 

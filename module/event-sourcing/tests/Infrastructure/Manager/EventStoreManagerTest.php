@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © Bold Brand Commerce Sp. z o.o. All rights reserved.
+ * Copyright © Ergonode Sp. z o.o. All rights reserved.
  * See LICENSE.txt for license details.
  */
 
@@ -14,8 +14,7 @@ use Doctrine\DBAL\Query\Expression\ExpressionBuilder;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Statement;
 use Ergonode\EventSourcing\Domain\AbstractAggregateRoot;
-use Ergonode\EventSourcing\Infrastructure\Bus\EventBusInterface;
-use Ergonode\EventSourcing\Infrastructure\DomainEventInterface;
+use Ergonode\SharedKernel\Domain\AggregateEventInterface;
 use Ergonode\EventSourcing\Infrastructure\DomainEventStoreInterface;
 use Ergonode\EventSourcing\Infrastructure\Envelope\DomainEventEnvelope;
 use Ergonode\EventSourcing\Infrastructure\Manager\AggregateBuilderInterface;
@@ -27,6 +26,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Ergonode\EventSourcing\Infrastructure\DomainEventProjectorInterface;
+use Ergonode\SharedKernel\Domain\Bus\DomainEventBusInterface;
 
 class EventStoreManagerTest extends TestCase
 {
@@ -39,9 +40,9 @@ class EventStoreManagerTest extends TestCase
      */
     private $mockEventStore;
     /**
-     * @var EventBusInterface|MockObject
+     * @var DomainEventBusInterface|MockObject
      */
-    private EventBusInterface $mockEventBus;
+    private DomainEventBusInterface $mockEventBus;
     /**
      * @var AggregateSnapshotInterface|MockObject
      */
@@ -56,20 +57,25 @@ class EventStoreManagerTest extends TestCase
     private $mockLogger;
     private EventStoreManager $manager;
 
+    private DomainEventProjectorInterface $projector;
+
     protected function setUp(): void
     {
         $this->mockBuilder = $this->createMock(AggregateBuilderInterface::class);
         $this->mockEventStore = $this->createMock(DomainEventStoreInterface::class);
-        $this->mockEventBus = $this->createMock(EventBusInterface::class);
+        $this->mockEventBus = $this->createMock(DomainEventBusInterface::class);
         $this->mockSnapshot = $this->createMock(AggregateSnapshotInterface::class);
         $this->mockConnection = $this->createMock(Connection::class);
         $this->mockLogger = $this->createMock(LoggerInterface::class);
+        $this->projector = $this->createMock(DomainEventProjectorInterface::class);
+
 
         $this->manager = new EventStoreManager(
             $this->mockBuilder,
             $this->mockEventStore,
             $this->mockEventBus,
             $this->mockSnapshot,
+            $this->projector,
             $this->mockConnection,
             $this->mockLogger,
         );
@@ -106,7 +112,7 @@ class EventStoreManagerTest extends TestCase
             new DomainEventEnvelope(
                 new AggregateId((string) Uuid::uuid4()),
                 1,
-                $this->createMock(DomainEventInterface::class),
+                $this->createMock(AggregateEventInterface::class),
                 new \DateTime(),
             ),
         ]);
@@ -115,6 +121,7 @@ class EventStoreManagerTest extends TestCase
         $this->mockConnection->expects($this->once())->method('insert');
         $this->mockSnapshot->expects($this->once())->method('save');
         $this->mockEventBus->expects($this->once())->method('dispatch');
+        $this->projector->expects($this->once())->method('project');
         $this->mockLogger->expects($this->never())->method('notice');
 
         $this->manager->save($aggregate);
@@ -128,7 +135,7 @@ class EventStoreManagerTest extends TestCase
             new DomainEventEnvelope(
                 new AggregateId((string) Uuid::uuid4()),
                 2,
-                $this->createMock(DomainEventInterface::class),
+                $this->createMock(AggregateEventInterface::class),
                 new \DateTime(),
             ),
         ]);
@@ -137,6 +144,7 @@ class EventStoreManagerTest extends TestCase
         $this->mockConnection->expects($this->never())->method('insert');
         $this->mockSnapshot->expects($this->never())->method('save');
         $this->mockEventBus->expects($this->once())->method('dispatch');
+        $this->projector->expects($this->once())->method('project');
         $this->mockLogger->expects($this->once())->method('notice');
 
         $this->manager->save($aggregate);
